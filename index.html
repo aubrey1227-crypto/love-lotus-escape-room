@@ -717,6 +717,207 @@ body {
 }
 .btn-replay:hover { background: rgba(255,255,255,0.15); }
 
+/* ══════════════════════════════════
+   課堂即時模式（Live Mode）
+   ══════════════════════════════════ */
+.mode-wrap {
+    width: 100%; max-width: 760px;
+    background: rgba(255,255,255,0.78);
+    border: 2px solid rgba(255,255,255,0.95);
+    border-radius: 22px;
+    padding: 1.3rem 1.6rem;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 8px 32px rgba(15,76,92,0.18);
+    margin-bottom: 1.4rem;
+}
+.mode-head {
+    font-size: 0.8rem; font-weight: 700;
+    color: var(--text-mid); letter-spacing: 0.2em;
+    margin-bottom: 0.9rem;
+}
+.mode-list { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+.mode-btn {
+    display: flex; align-items: center; gap: 0.8rem;
+    padding: 0.85rem 1rem;
+    border: 2px solid rgba(21,97,109,0.15);
+    border-radius: 14px;
+    background: rgba(255,255,255,0.6);
+    font-family: 'Noto Sans TC', sans-serif;
+    text-align: left; cursor: pointer;
+    transition: all 0.22s ease;
+}
+.mode-btn:hover { border-color: rgba(15,76,92,0.5); background: rgba(214,238,233,0.85); }
+.mode-btn.picked {
+    border-color: var(--sky-top);
+    background: rgba(15,76,92,0.12);
+    box-shadow: 0 0 0 3px rgba(15,76,92,0.15);
+}
+.mode-icon { font-size: 1.5rem; flex-shrink: 0; }
+.mode-name { font-weight: 600; font-size: 0.9rem; color: var(--text-dark); line-height: 1.35; }
+.mode-hint { font-size: 0.72rem; color: var(--text-lite); margin-top: 0.15rem; line-height: 1.45; }
+
+/* 每題時間設定 */
+.live-settings {
+    display: none;
+    width: 100%; max-width: 760px;
+    background: rgba(255,255,255,0.78);
+    border: 2px dashed rgba(15,76,92,0.3);
+    border-radius: 18px;
+    padding: 1rem 1.4rem;
+    backdrop-filter: blur(16px);
+    margin-bottom: 1.4rem;
+    align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 0.8rem;
+}
+.live-settings.show { display: flex; }
+.live-settings-label { font-size: 0.84rem; color: var(--text-mid); font-weight: 600; letter-spacing: 0.1em; }
+.live-settings-opts { display: flex; gap: 0.55rem; flex-wrap: wrap; }
+.live-time-btn {
+    padding: 0.5rem 1.05rem;
+    border: 2px solid rgba(21,97,109,0.18);
+    border-radius: 100px;
+    background: rgba(255,255,255,0.7);
+    font-family: 'Noto Sans TC', sans-serif; font-size: 0.82rem;
+    color: var(--text-dark); cursor: pointer; transition: all 0.2s ease;
+}
+.live-time-btn:hover { border-color: rgba(15,76,92,0.5); }
+.live-time-btn.picked {
+    border-color: var(--sky-top);
+    background: rgba(15,76,92,0.12);
+    color: var(--sky-top); font-weight: 700;
+}
+
+/* 倒數計時 */
+.timer-box {
+    display: none;
+    width: 100%;
+    background: rgba(255,255,255,0.72);
+    border: 2px solid rgba(255,255,255,0.9);
+    border-radius: 16px;
+    padding: 0.75rem 1.2rem;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 18px rgba(15,76,92,0.1);
+    align-items: center; gap: 0.9rem;
+}
+.timer-box.show { display: flex; }
+.timer-box.urgent { border-color: rgba(220,38,38,0.55); background: rgba(254,242,242,0.85); }
+.timer-label { font-size: 0.8rem; color: var(--text-lite); font-weight: 600; white-space: nowrap; }
+.timer-num {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: 1.9rem; line-height: 1; color: var(--sky-top);
+    min-width: 1.6em; text-align: center;
+}
+.timer-box.urgent .timer-num { color: var(--ng); }
+.timer-track { flex: 1; height: 10px; background: rgba(15,76,92,0.12); border-radius: 10px; overflow: hidden; }
+.timer-bar {
+    height: 100%; width: 100%;
+    background: linear-gradient(90deg, #ffd9a0, #e8a87c);
+    border-radius: 10px;
+    transition: width 1s linear;
+}
+
+/* 全班統計條 */
+.live-stats {
+    display: none;
+    width: 100%;
+    background: rgba(255,255,255,0.72);
+    border: 2px solid rgba(255,255,255,0.9);
+    border-radius: 14px;
+    padding: 0.7rem 1.2rem;
+    backdrop-filter: blur(12px);
+    justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 0.6rem;
+}
+.live-stats.show { display: flex; }
+.ls-item { font-size: 0.82rem; color: var(--text-lite); }
+.ls-item strong { font-family: 'ZCOOL XiaoWei', serif; font-size: 1.25rem; color: var(--text-mid); margin: 0 0.2rem; }
+.ls-item strong.ok { color: var(--ok); }
+.ls-item strong.ng { color: var(--ng); }
+
+/* 大字體老師視角 */
+body.mode-live .q-text   { font-size: clamp(1.35rem, 3.4vw, 1.9rem); line-height: 1.8; }
+body.mode-live .ans-btn  { font-size: clamp(1.05rem, 2.5vw, 1.35rem); padding: 1.2rem 1.45rem; }
+body.mode-live .ans-badge{ min-width: 34px; height: 34px; font-size: 0.95rem; border-radius: 9px; }
+body.mode-live .scene-body { font-size: 1rem; }
+body.mode-live .fb-explain { font-size: 1rem; }
+body.mode-live .q-card   { padding: 2.4rem 2.6rem; }
+
+/* ══════════════════════════════════
+   課堂學習報告
+   ══════════════════════════════════ */
+.report-wrap { width: 100%; max-width: 760px; text-align: left; }
+.report-head { text-align: center; margin-bottom: 1.6rem; }
+.report-icon { font-size: 3.4rem; margin-bottom: 0.5rem; }
+.report-title {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: clamp(1.6rem, 4.5vw, 2.4rem);
+    color: #fff; text-shadow: 0 2px 12px rgba(0,0,0,0.2); margin-bottom: 0.3rem;
+}
+.report-sub { font-size: 0.88rem; color: rgba(255,255,255,0.85); }
+.report-card {
+    background: rgba(255,255,255,0.85);
+    border: 2px solid rgba(255,255,255,0.95);
+    border-radius: 20px;
+    padding: 1.4rem 1.6rem;
+    backdrop-filter: blur(14px);
+    box-shadow: 0 10px 34px rgba(15,76,92,0.12);
+    margin-bottom: 1.1rem;
+    break-inside: avoid;
+}
+.report-line {
+    font-size: 0.78rem; font-weight: 700; letter-spacing: 0.18em;
+    color: var(--text-mid); margin-bottom: 0.9rem;
+}
+.report-rate { font-family: 'ZCOOL XiaoWei', serif; font-size: 3rem; color: var(--sky-top); line-height: 1; margin-bottom: 0.8rem; }
+.report-track { height: 14px; background: rgba(15,76,92,0.12); border-radius: 10px; overflow: hidden; margin-bottom: 1.1rem; }
+.report-fill {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, #3d9a94, #ffd9a0);
+    border-radius: 10px;
+    transition: width 0.9s cubic-bezier(0.4,0,0.2,1);
+}
+.report-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.chip {
+    display: flex; align-items: center; gap: 0.45rem;
+    padding: 0.42rem 0.7rem;
+    border-radius: 10px; font-size: 0.76rem;
+    max-width: 100%;
+}
+.chip.ok { background: var(--ok-bg); color: var(--ok); border: 1.5px solid rgba(22,163,74,0.3); }
+.chip.ng { background: var(--ng-bg); color: var(--ng); border: 1.5px solid rgba(220,38,38,0.28); }
+.chip-no { font-weight: 700; opacity: 0.7; }
+.chip-txt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 15rem; }
+.chip-mark { font-weight: 700; }
+
+.wrong-item {
+    border-left: 4px solid var(--ng);
+    background: rgba(220,38,38,0.05);
+    border-radius: 0 12px 12px 0;
+    padding: 0.9rem 1.1rem;
+    margin-bottom: 0.9rem;
+}
+.wrong-q { font-family: 'Noto Serif TC', serif; font-size: 0.92rem; color: var(--text-dark); line-height: 1.7; margin-bottom: 0.5rem; font-weight: 600; }
+.wrong-a { font-size: 0.86rem; color: var(--ok); line-height: 1.6; margin-bottom: 0.4rem; }
+.wrong-e { font-size: 0.84rem; color: var(--text-lite); line-height: 1.75; }
+.report-note {
+    background: rgba(255,217,160,0.25);
+    border: 2px solid rgba(255,193,7,0.35);
+    border-radius: 14px;
+    padding: 1rem 1.3rem;
+    font-size: 0.88rem; color: #7a5c10; line-height: 1.8;
+}
+
+/* ══════════════════════════════════
+   列印樣式
+   ══════════════════════════════════ */
+@media print {
+    .sky-bg, .sound-btn, .character-wrap, .btn-back, .final-btns, .timer-box, .live-stats { display: none !important; }
+    body { background: #fff !important; min-height: auto; }
+    .screen { min-height: auto !important; padding: 0 !important; }
+    .report-title, .report-sub { color: #0f3b44 !important; text-shadow: none !important; }
+    .report-card { box-shadow: none !important; border: 1.5px solid #ccc !important; background: #fff !important; }
+    .report-wrap { max-width: 100% !important; }
+}
+
 /* Confetti */
 .confetti-p {
     position: fixed; pointer-events: none; z-index: 999;
@@ -774,6 +975,26 @@ body {
         <p class="home-desc" id="homeDesc">北宋周敦頤以蓮喻君子，一百一十九字寫盡高潔情操。請挑戰五關或十關密室，讀懂「出淤泥而不染」的深意！</p>
     </div>
 
+    <div class="mode-wrap">
+        <div class="mode-head">🎬 遊戲模式</div>
+        <div class="mode-list">
+            <button class="mode-btn picked" id="mSolo" onclick="pickMode('solo', this)">
+                <span class="mode-icon">🙋</span>
+                <div>
+                    <div class="mode-name">個人挑戰模式</div>
+                    <div class="mode-hint">學生自己玩，輸入姓名領取結業證書</div>
+                </div>
+            </button>
+            <button class="mode-btn" id="mLive" onclick="pickMode('live', this)">
+                <span class="mode-icon">🎓</span>
+                <div>
+                    <div class="mode-name">課堂即時模式</div>
+                    <div class="mode-hint">教師投影操作，限時揭曉＋全班答對率＋錯題補教報告</div>
+                </div>
+            </button>
+        </div>
+    </div>
+
     <div class="sel-grid">
         <div class="sel-panel">
             <div class="sel-head">🎯 選擇難度</div>
@@ -816,6 +1037,16 @@ body {
         </div>
     </div>
 
+    <div class="live-settings" id="liveSettings">
+        <span class="live-settings-label">⏱️ 每題作答時間</span>
+        <div class="live-settings-opts">
+            <button class="live-time-btn" onclick="pickTime(15,this)">15 秒</button>
+            <button class="live-time-btn picked" onclick="pickTime(30,this)">30 秒</button>
+            <button class="live-time-btn" onclick="pickTime(45,this)">45 秒</button>
+            <button class="live-time-btn" onclick="pickTime(0,this)">不限時</button>
+        </div>
+    </div>
+
     <button class="btn-start" id="btnStart" onclick="startGame()" disabled>✨ 開始逃脫</button>
     <div class="divider"></div>
     <p class="divider-note">每關答對即獲得密碼碎片 · 集齊碎片方能逃出密室</p>
@@ -835,6 +1066,19 @@ body {
             <div class="pg-track"><div class="pg-fill" id="pgFill" style="width:0%"></div></div>
         </div>
         <div class="frag-row" id="fragRow"></div>
+
+        <div class="timer-box" id="timerBox">
+            <span class="timer-label">⏱️ 剩餘時間</span>
+            <span class="timer-num" id="timerNum">30</span>
+            <div class="timer-track"><div class="timer-bar" id="timerBar"></div></div>
+        </div>
+
+        <div class="live-stats" id="liveStats">
+            <span class="ls-item">本題結果 <strong id="lsCur">—</strong></span>
+            <span class="ls-item">全班平均 <strong id="lsAvg">—</strong></span>
+            <span class="ls-item">已答 <strong id="lsDone">0</strong> / <span id="lsTotal">10</span></span>
+        </div>
+
         <div class="scene-wrap">
             <span class="scene-icon" id="sceneIcon">🪷</span>
             <div class="scene-body" id="sceneBody"></div>
@@ -863,17 +1107,53 @@ body {
      ══════════════════════════════════ -->
 <div class="screen hidden" id="nameScreen">
     <div class="name-wrap">
-        <div class="name-icon">🏆</div>
-        <h2 class="name-title">恭喜完成所有關卡！</h2>
-        <p class="name-sub">請輸入您的姓名，領取專屬結業證書</p>
+        <div class="name-icon" id="nameIcon">🏆</div>
+        <h2 class="name-title" id="nameTitle">恭喜完成所有關卡！</h2>
+        <p class="name-sub" id="nameSub">請輸入您的姓名，領取專屬結業證書</p>
         <div class="name-card">
-            <label class="name-label" for="nameInput">✏️ 學生姓名</label>
+            <label class="name-label" for="nameInput" id="nameLabel">✏️ 學生姓名</label>
             <input class="name-input" id="nameInput" type="text" placeholder="請輸入姓名" maxlength="10"
-                oninput="document.getElementById('btnConfirm').disabled = this.value.trim().length === 0">
+                oninput="updateConfirmBtn()">
             <br>
             <button class="btn-confirm" id="btnConfirm" onclick="showVictory()" disabled>
                 🎓 領取證書 →
             </button>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════
+     REPORT SCREEN（課堂即時模式）
+     ══════════════════════════════════ -->
+<div class="screen hidden" id="reportScreen">
+    <div class="report-wrap">
+        <div class="report-head">
+            <div class="report-icon">📊</div>
+            <h2 class="report-title">課堂學習報告</h2>
+            <p class="report-sub" id="rpMeta">愛蓮說・閱讀密室逃脫</p>
+        </div>
+
+        <div class="report-card">
+            <div class="report-line">📈 全班總答對率</div>
+            <div class="report-rate"><span id="rpRate">0%</span></div>
+            <div class="report-track"><div class="report-fill" id="rpFill"></div></div>
+            <div class="report-line">逐題作答明細</div>
+            <div class="report-chips" id="rpChips"></div>
+        </div>
+
+        <div class="report-card">
+            <div class="report-line" id="rpWrongTitle">⚠️ 需要補教的題目</div>
+            <div id="rpWrongList"></div>
+        </div>
+
+        <div class="report-card">
+            <div class="report-line">🗒️ 教學建議</div>
+            <div class="report-note" id="rpNote"></div>
+        </div>
+
+        <div class="final-btns">
+            <button class="btn-home" onclick="window.print()">🖨️ 列印報告</button>
+            <button class="btn-replay" onclick="goHome()">🏠 返回首頁</button>
         </div>
     </div>
 </div>
@@ -1350,10 +1630,33 @@ document.addEventListener('click', function startBGM() {
    GAME STATE
    ───────────────────────────────── */
 let G = {
-    diff: null, levels: null,
+    diff: null, levels: null, mode: 'solo', liveSeconds: 30,
     cur: 0, correct: 0,
-    questions: [], studentName: '', currentAnsIdx: 0
+    questions: [], studentName: '', currentAnsIdx: 0,
+    results: []
 };
+let timerHandle = null;
+
+/* ─────────────────────────────────
+   MODE / TIME SELECTION
+   ───────────────────────────────── */
+function pickMode(mode, el) {
+    document.querySelectorAll('#mSolo,#mLive').forEach(b => b.classList.remove('picked'));
+    el.classList.add('picked');
+    G.mode = mode;
+    const live = mode === 'live';
+    document.getElementById('liveSettings').classList.toggle('show', live);
+    document.getElementById('btnStart').textContent = live ? '🎬 開始上課' : '✨ 開始逃脫';
+}
+
+function pickTime(sec, el) {
+    document.querySelectorAll('.live-time-btn').forEach(b => b.classList.remove('picked'));
+    el.classList.add('picked');
+    G.liveSeconds = sec;
+}
+
+function isLive() { return G.mode === 'live'; }
+
 
 /* ─────────────────────────────────
    SELECTION
@@ -1386,8 +1689,14 @@ function switchTo(id, afterFn) {
 
 function goHome() {
     stopBGM();
-    G = { diff: null, levels: null, cur: 0, correct: 0, questions: [], studentName: '', currentAnsIdx: 0 };
+    stopTimer();
+    G = { diff: null, levels: null, mode: 'solo', liveSeconds: G.liveSeconds, cur: 0, correct: 0, questions: [], studentName: '', currentAnsIdx: 0, results: [] };
+    document.body.classList.remove('mode-live');
     document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('picked'));
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('picked'));
+    document.getElementById('mSolo').classList.add('picked');
+    document.getElementById('liveSettings').classList.remove('show');
+    document.getElementById('btnStart').textContent = '✨ 開始逃脫';
     document.getElementById('btnStart').disabled = true;
     switchTo('homeScreen');
 }
@@ -1405,7 +1714,9 @@ function shuffle(arr) {
 
 function startGame() {
     G.questions = shuffle([...QDB[G.diff]]).slice(0, G.levels);
-    G.cur = 0; G.correct = 0;
+    G.cur = 0; G.correct = 0; G.results = [];
+    document.body.classList.toggle('mode-live', isLive());
+    document.getElementById('lsTotal').textContent = G.levels;
     playBGM();
     switchTo('gameScreen', () => {
         buildFragRow();
@@ -1458,6 +1769,94 @@ function renderLevel() {
     document.getElementById('fbFrag').className = 'fb-frag';
     document.getElementById('btnRetry').style.display = 'none';
     document.getElementById('btnNext').style.display  = 'none';
+
+    updateLiveStats();
+    startTimer();
+}
+
+/* ─────────────────────────────────
+   倒數計時（即時模式）
+   ───────────────────────────────── */
+function stopTimer() {
+    if (timerHandle) { clearInterval(timerHandle); timerHandle = null; }
+    document.getElementById('timerBox').classList.remove('show', 'urgent');
+}
+
+function startTimer() {
+    stopTimer();
+    const box = document.getElementById('timerBox');
+    if (!isLive() || !G.liveSeconds) return;
+    box.classList.add('show');
+    let left = G.liveSeconds;
+    const num = document.getElementById('timerNum');
+    const bar = document.getElementById('timerBar');
+    const paint = () => {
+        num.textContent = left;
+        bar.style.width = (left / G.liveSeconds * 100) + '%';
+        box.classList.toggle('urgent', left <= 5);
+    };
+    paint();
+    timerHandle = setInterval(() => {
+        left--;
+        paint();
+        if (left <= 0) { stopTimer(); handleTimeout(); }
+    }, 1000);
+}
+
+function handleTimeout() {
+    const q = G.questions[G.cur];
+    if (!q) return;
+    document.querySelectorAll('.ans-btn').forEach(b => b.disabled = true);
+    document.getElementById('ab' + G.currentAnsIdx).classList.add('correct');
+    recordResult(false, true);
+    showFeedback(false, q.exp, true);
+    updateLiveStats();
+    document.getElementById('btnRetry').style.display = 'inline-block';
+    document.getElementById('btnNext').style.display  = 'inline-block';
+}
+
+/* ─────────────────────────────────
+   結果記錄（即時模式統計用）
+   ───────────────────────────────── */
+function recordResult(ok, timeout) {
+    const q = G.questions[G.cur];
+    G.results[G.cur] = {
+        level: G.cur,
+        ok: ok,
+        timeout: !!timeout,
+        stem: q.q,
+        correctText: q.opts[q.ans],
+        exp: q.exp
+    };
+}
+
+function updateLiveStats() {
+    const strip = document.getElementById('liveStats');
+    strip.classList.toggle('show', isLive());
+    if (!isLive()) return;
+    const done = G.results.filter(Boolean);
+    const right = done.filter(r => r.ok).length;
+    const cur = G.results[G.cur];
+
+    const curEl = document.getElementById('lsCur');
+    if (cur) {
+        curEl.textContent = cur.ok ? '✅ 全班答對' : (cur.timeout ? '⏱️ 時間到' : '❌ 有同學答錯');
+        curEl.className = cur.ok ? 'ok' : 'ng';
+    } else {
+        curEl.textContent = '—';
+        curEl.className = '';
+    }
+
+    const avgEl = document.getElementById('lsAvg');
+    if (done.length) {
+        const pct = Math.round(right / done.length * 100);
+        avgEl.textContent = pct + '%';
+        avgEl.className = pct >= 60 ? 'ok' : 'ng';
+    } else {
+        avgEl.textContent = '—';
+        avgEl.className = '';
+    }
+    document.getElementById('lsDone').textContent = done.length;
 }
 
 /* ─────────────────────────────────
@@ -1465,11 +1864,13 @@ function renderLevel() {
    ───────────────────────────────── */
 function handleAnswer(idx) {
     const q = G.questions[G.cur];
+    stopTimer();
     document.querySelectorAll('.ans-btn').forEach(b => b.disabled = true);
 
     if (idx === G.currentAnsIdx) {
         document.getElementById(`ab${idx}`).classList.add('correct');
         G.correct++;
+        recordResult(true, false);
         showFeedback(true, q.exp);
         setTimeout(() => {
             const slot = document.getElementById(`fs${G.cur}`);
@@ -1484,22 +1885,27 @@ function handleAnswer(idx) {
         const card = document.getElementById('qCard');
         card.classList.add('shaking');
         card.addEventListener('animationend', () => card.classList.remove('shaking'), { once: true });
+        recordResult(false, false);
         showFeedback(false, q.exp);
         document.getElementById('btnRetry').style.display = 'inline-block';
         document.getElementById('btnNext').style.display = 'inline-block';
     }
+    updateLiveStats();
 }
 
-function showFeedback(ok, explain) {
+function showFeedback(ok, explain, timeout) {
     const box = document.getElementById('fbBox');
     box.className = 'fb-box show ' + (ok ? 'fb-ok' : 'fb-ng');
-    document.getElementById('fbHead').textContent    = ok ? '✅ 答對了！密碼碎片已解鎖' : '❌ 答案有誤，請參考解析';
+    document.getElementById('fbHead').textContent = ok
+        ? '✅ 答對了！密碼碎片已解鎖'
+        : (timeout ? '⏰ 時間到，揭曉答案' : '❌ 答案有誤，請參考解析');
     document.getElementById('fbExplain').textContent = explain;
 }
 
 function retryLevel() { renderLevel(); }
 
 function nextLevel() {
+    stopTimer();
     G.cur++;
     if (G.cur >= G.levels) {
         stopBGM();
@@ -1514,10 +1920,24 @@ function nextLevel() {
 /* ─────────────────────────────────
    NAME INPUT
    ───────────────────────────────── */
+function updateConfirmBtn() {
+    const v = document.getElementById('nameInput').value.trim();
+    document.getElementById('btnConfirm').disabled = isLive() ? false : (v.length === 0);
+}
+
 function showNameScreen() {
+    const live = isLive();
+    document.getElementById('nameIcon').textContent    = live ? '📊' : '🏆';
+    document.getElementById('nameTitle').textContent   = live ? '所有關卡已完成！' : '恭喜完成所有關卡！';
+    document.getElementById('nameSub').textContent     = live
+        ? '可選填座號（方便對照座位表），接著產出題目分析報告'
+        : '請輸入您的姓名，領取專屬結業證書';
+    document.getElementById('nameLabel').innerHTML     = live ? '🪑 座號（選填）' : '✏️ 學生姓名';
+    document.getElementById('nameInput').placeholder   = live ? '例：3 排 5 號（可留空）' : '請輸入姓名';
+    document.getElementById('btnConfirm').textContent  = live ? '📊 產出題目報告 →' : '🎓 領取證書 →';
     switchTo('nameScreen', () => {
         document.getElementById('nameInput').value = '';
-        document.getElementById('btnConfirm').disabled = true;
+        updateConfirmBtn();
     });
 }
 
@@ -1526,6 +1946,7 @@ function showNameScreen() {
    ───────────────────────────────── */
 function showVictory() {
     G.studentName = document.getElementById('nameInput').value.trim() || '同學';
+    if (isLive()) { stopBGM(); showReport(); return; }
     switchTo('victoryScreen', () => {
         document.getElementById('certName').textContent = G.studentName;
         document.getElementById('certDiff').textContent  = DIFF_LABEL[G.diff];
@@ -1554,10 +1975,83 @@ function showVictory() {
 }
 
 function replayGame() {
-    G.cur = 0; G.correct = 0;
+    G.cur = 0; G.correct = 0; G.results = [];
     G.questions = shuffle([...QDB[G.diff]]).slice(0, G.levels);
+    stopTimer();
     playBGM();
     switchTo('gameScreen', () => { buildFragRow(); renderLevel(); });
+}
+
+/* ─────────────────────────────────
+   課堂學習報告（即時模式）
+   ───────────────────────────────── */
+function esc(s) {
+    return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+}
+
+function showReport() {
+    const res = G.results.filter(Boolean);
+    const total = res.length;
+    const right = res.filter(r => r.ok).length;
+    const pct = total ? Math.round(right / total * 100) : 0;
+    const wrong = res.filter(r => !r.ok);
+
+    document.getElementById('rpMeta').textContent =
+        `愛蓮說・閱讀密室逃脫　│　${DIFF_LABEL[G.diff]}　│　${LEVEL_LABEL[G.levels]}`
+        + (G.studentName && G.studentName !== '同學' ? `　│　座號：${esc(G.studentName)}` : '')
+        + (G.liveSeconds ? `　│　每題 ${G.liveSeconds} 秒` : '　│　不限時');
+
+    document.getElementById('rpRate').textContent = pct + '%';
+
+    document.getElementById('rpChips').innerHTML = res.map((r, i) =>
+        `<div class="chip ${r.ok ? 'ok' : 'ng'}">`
+        + `<span class="chip-no">${i + 1}</span>`
+        + `<span class="chip-txt" title="${esc(r.stem)}">${esc(r.stem)}</span>`
+        + `<span class="chip-mark">${r.ok ? '✓' : (r.timeout ? '⏱' : '✗')}</span>`
+        + `</div>`).join('');
+
+    const wt = document.getElementById('rpWrongTitle');
+    const wl = document.getElementById('rpWrongList');
+    if (!wrong.length) {
+        wt.textContent = '🎉 全班沒有錯題，無須補教';
+        wl.innerHTML = '<div class="wrong-item" style="border-left-color:#16a34a;background:rgba(22,163,74,0.06)">'
+            + '<div class="wrong-a" style="margin:0">✅ 本次全班每一題都答對了，可以直接進入下一個段落或進行挑戰加碼。</div></div>';
+    } else {
+        wt.textContent = `⚠️ 需要補教的題目（${wrong.length} 題）`;
+        wl.innerHTML = wrong.map(r =>
+            `<div class="wrong-item">`
+            + `<div class="wrong-q">第 ${r.level + 1} 題${r.timeout ? '（⏱️ 時間到未作答）' : '（❌ 全班有同學答錯）'}：${esc(r.stem)}</div>`
+            + `<div class="wrong-a">✅ 正確答案：${esc(r.correctText)}</div>`
+            + `<div class="wrong-e">💡 ${esc(r.exp)}</div>`
+            + `</div>`).join('');
+    }
+
+    document.getElementById('rpNote').textContent = buildNote(pct, right, total, wrong.length, G.liveSeconds);
+
+    switchTo('reportScreen', () => {
+        setTimeout(() => { document.getElementById('rpFill').style.width = pct + '%'; }, 120);
+    });
+}
+
+function buildNote(pct, right, total, wrongCount, secs) {
+    const diffTxt = DIFF_LABEL[G.diff] || '';
+    const lines = [];
+    lines.push(`本次以「${diffTxt}」進行，共 ${total} 題，答對 ${right} 題（${pct}%）。`);
+
+    if (pct === 100) {
+        lines.push('全班全數答對，課文理解程度良好，可直接進入寫作延伸：請學生各選一種代表自身特質的植物，說明其外形與生長習性。');
+    } else if (pct >= 60) {
+        lines.push('整體掌握度良好，但仍有幾題需要釐清。建議針對上方紅框題目，先讓學生說出題幹關鍵詞，再全班一起複述正確答案與解析。');
+    } else {
+        lines.push('整體答對率偏低，建議先回到課文重讀：請學生找出課文中對應的句子並畫線，再重新說明出題者如何由花的特質推導出君子的品德。');
+    }
+
+    if (wrongCount) {
+        lines.push(`特別提醒：上方列出的 ${wrongCount} 題為本次錯誤集中處${secs ? '，其中標示「時間到」的題目代表學生在有限時間內無法判讀，建議練習先圈出題幹關鍵詞的策略' : '，建議改用其他變式題再練一次'}。`);
+    } else {
+        lines.push('可提高難度改用「高手挑戰者」，或挑戰十關迷城加深印象。');
+    }
+    return lines.join('');
 }
 
 /* Confetti effect */
