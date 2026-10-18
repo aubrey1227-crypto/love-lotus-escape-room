@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 336" width="200" height="336" role="img" aria-label="周敦頤插圖：宋代理學士人，手持蓮花">
+  <title>周敦頤</title>
+  <defs>
+    <linearGradient id="robe" x1="0" y1="0" x2="0.8" y2="1">
+      <stop offset="0" stop-color="#3a9a99"/>
+      <stop offset="1" stop-color="#14606c"/>
+    </linearGradient>
+    <linearGradient id="sleeve" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0" stop-color="#2c8188"/>
+      <stop offset="1" stop-color="#0f4a55"/>
+    </linearGradient>
+    <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f8d6b4"/>
+      <stop offset="1" stop-color="#eab78c"/>
+    </linearGradient>
+    <linearGradient id="lotus" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fdf0f4"/>
+      <stop offset="1" stop-color="#f0b7ca"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 地面投影 -->
+  <ellipse cx="100" cy="324" rx="58" ry="8" fill="#0a323a" opacity="0.20"/>
+
+  <!-- 後袖（左手，垂墜） -->
+  <path d="M54 152 C41 166 33 210 29 264 C28 279 39 288 53 288 C64 288 70 279 68 266 C64 214 63 180 68 158 Z" fill="url(#sleeve)"/>
+  <path d="M29 264 C28 279 39 288 53 288 C60 288 66 283 68 274" fill="none" stroke="#0c4049" stroke-width="2" opacity="0.5"/>
+
+  <!-- 道袍主體 -->
+  <path d="M100 106 C70 106 52 127 46 154 L31 310 C30 318 35 322 43 322 L157 322 C165 322 170 318 169 310 L154 154 C148 127 130 106 100 106 Z" fill="url(#robe)"/>
+
+  <!-- 前袖（右手，伸出） -->
+  <path d="M150 154 C159 166 165 196 168 222 C169 234 160 240 149 238 C140 236 136 228 138 217 C141 194 143 172 140 158 Z" fill="url(#sleeve)"/>
+
+  <!-- 交領右衽 -->
+  <path d="M100 106 L73 115 L100 158 L127 115 Z" fill="#f4efe3"/>
+  <path d="M100 156 L84 124 L100 108 L116 124 Z" fill="#ded0ae"/>
+  <path d="M100 106 L73 115 L100 158" fill="none" stroke="#d8cfb8" stroke-width="1.6" opacity="0.8"/>
+
+  <!-- 腰帶 -->
+  <rect x="44" y="198" width="112" height="15" rx="5" fill="#b9972b"/>
+  <rect x="44" y="198" width="112" height="5" rx="2.5" fill="#cfae40" opacity="0.75"/>
+  <path d="M100 213 l11 9 -11 9 -11 -9 Z" fill="#cfae40"/>
+
+  <!-- 衣褶 -->
+  <path d="M74 214 L64 306" stroke="#0d4d58" stroke-width="2.5" opacity="0.35" stroke-linecap="round"/>
+  <path d="M126 214 L136 306" stroke="#0d4d58" stroke-width="2.5" opacity="0.35" stroke-linecap="round"/>
+  <path d="M100 230 L100 300" stroke="#0d4d58" stroke-width="2" opacity="0.22" stroke-linecap="round"/>
+
+  <!-- 頸 -->
+  <path d="M90 88 h20 v24 h-20 Z" fill="url(#skin)"/>
+
+  <!-- 耳 -->
+  <ellipse cx="73" cy="74" rx="6" ry="8" fill="#eab78c"/>
+  <ellipse cx="127" cy="74" rx="6" ry="8" fill="#eab78c"/>
+
+  <!-- 臉 -->
+  <ellipse cx="100" cy="70" rx="25" ry="29" fill="url(#skin)"/>
+
+  <!-- 眉 -->
+  <path d="M85 62 q7 -6 14 -1" fill="none" stroke="#4a3f36" stroke-width="2.6" stroke-linecap="round"/>
+  <path d="M115 62 q-7 -6 -14 -1" fill="none" stroke="#4a3f36" stroke-width="2.6" stroke-linecap="round"/>
+
+  <!-- 眼 -->
+  <ellipse cx="91" cy="70" rx="3.3" ry="3.8" fill="#33302e"/>
+  <ellipse cx="109" cy="70" rx="3.3" ry="3.8" fill="#33302e"/>
+  <circle cx="92.2" cy="68.6" r="1.1" fill="#fff" opacity="0.9"/>
+  <circle cx="110.2" cy="68.6" r="1.1" fill="#fff" opacity="0.9"/>
+
+  <!-- 鼻 -->
+  <path d="M100 73 q-3 8 2 9" fill="none" stroke="#cf9a72" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- 髭 -->
+  <path d="M89 79 Q100 86 111 79 Q105 84 100 84 Q95 84 89 79 Z" fill="#4a3f36"/>
+
+  <!-- 口 -->
+  <path d="M94 89 q6 4 12 0" fill="none" stroke="#b87a58" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- 鬚（自頷下垂） -->
+  <path d="M87 94 C88 114 92 128 100 134 C108 128 112 114 113 94 Q100 99 87 94 Z" fill="#4a3f36"/>
+  <path d="M94 99 Q92 116 97 130" fill="none" stroke="#6b5c4c" stroke-width="1.8" opacity="0.5"/>
+  <path d="M106 99 Q108 116 103 130" fill="none" stroke="#6b5c4c" stroke-width="1.8" opacity="0.5"/>
+
+  <!-- 儒巾（頭巾） -->
+  <path d="M74 54 C73 33 84 22 100 22 C116 22 127 33 126 54 Z" fill="#2f3d45"/>
+  <path d="M80 35 q20 -9 40 0" fill="none" stroke="#41555f" stroke-width="2.5" opacity="0.85"/>
+  <path d="M130 56 q14 8 12 23 q-1 9 -7 10 l-3 -18 z" fill="#26333b"/>
+  <path d="M66 49 C66 46 68 44 71 44 L129 44 C132 44 134 46 134 49 L134 56 C134 59 132 61 129 61 L71 61 C68 61 66 59 66 56 Z" fill="#465c67"/>
+  <path d="M66 49 C66 46 68 44 71 44 L129 44 C132 44 134 46 134 49 L134 51 L66 51 Z" fill="#5a727d" opacity="0.65"/>
+
+  <!-- 手（持蓮） -->
+  <ellipse cx="136" cy="243" rx="12" ry="10" fill="url(#skin)"/>
+  <path d="M128 238 q-5 3 -4 8" fill="none" stroke="#cf9a72" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M143 238 q5 3 4 8" fill="none" stroke="#cf9a72" stroke-width="1.8" stroke-linecap="round"/>
+
+  <!-- 蓮莖 -->
+  <path d="M136 232 L136 241" stroke="#4a8f6f" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- 蓮花 -->
+  <g transform="translate(136,214)">
+    <path d="M0 0 C -13 -7 -18 -16 -16 -26 C -7 -21 -2 -11 0 0 Z" fill="#f3c3d3"/>
+    <path d="M0 0 C 13 -7 18 -16 16 -26 C 7 -21 2 -11 0 0 Z" fill="#f3c3d3"/>
+    <path d="M0 -2 C -7 -12 -7 -24 0 -32 C 7 -24 7 -12 0 -2 Z" fill="url(#lotus)"/>
+    <path d="M0 2 C -16 0 -23 -8 -24 -16 C -14 -13 -5 -7 0 2 Z" fill="#eaaac0"/>
+    <path d="M0 2 C 16 0 23 -8 24 -16 C 14 -13 5 -7 0 2 Z" fill="#eaaac0"/>
+    <path d="M-6 1 h12 l-3 9 h-6 Z" fill="#4a8f6f"/>
+  </g>
+</svg>

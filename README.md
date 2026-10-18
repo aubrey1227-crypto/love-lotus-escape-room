@@ -15,7 +15,7 @@
     │   ├── Music_Trap_Drama.mp3      # 背景音樂
     │   └── Awards.m4a                # 過關音效
     └── img/
-        └── character.png             # 右下角擺動人物去背頭像（周敦頤）
+        └── character.svg           # 右下角擺動人物插圖（周敦頤）
 ```
 
 ## 🚀 線上遊玩
@@ -72,9 +72,19 @@
 
 想更換配色，只需修改 `index.html` 開頭 `:root` 內的 CSS 變數即可。
 
-## 🖼️ 更換人物頭像
+## 🖼️ 更換人物形象
 
-將去背的 PNG 圖片覆蓋到 `assets/img/character.png` 即可（建議直向、人物全身，檔案建議小於 1 MB）。
+右下角的人物是 **手繪 SVG 插圖**（`assets/img/character.svg`，僅 2 KB，任意尺寸皆清晰），刻意繪製成宋代理學士人形象：儒巾、交領右衽、長鬚，手持蓮花呼應「愛蓮說」主題。
+
+若想換成其他形象（例如真人去背圖或陶淵明）：
+
+- **替換插圖**：直接編輯 `assets/img/character.svg` 的繪製內容即可，viewBox 比例維持 `0 0 200 336` 最合適。
+- **改用點陣圖**：把圖片命名為 `character.svg` 放進同一資料夾並重新匯出為 SVG 佔位，或修改 `index.html` 第 758 行的圖片路徑：
+  ```html
+  <img src="assets/img/character.png" alt="周敦頤" onerror="...">
+  ```
+  圖片若載入失敗，角色會自動隱藏，不影響遊戲進行。
+
 
 ## 🔊 音效
 
