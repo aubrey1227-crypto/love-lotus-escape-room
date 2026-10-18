@@ -1,0 +1,1594 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>愛蓮說・閱讀密室逃脫</title>
+    <meta name="description" content="〈愛蓮說〉互動式閱讀理解密室逃脫遊戲。北宋周敦頤以蓮喻君子，陪你讀懂「出淤泥而不染」的君子風骨。">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;900&family=Noto+Sans+TC:wght@300;400;500;700&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+
+<style>
+/* ══════════════════════════════════
+   RESET & VARIABLES
+   視覺主題：清塘映日・蓮心君子
+   深潭墨青 → 蓮葉青碧 → 水面晨霧，搭配暖晨光暈
+   ══════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+    --sky-top:    #0f4c5c; /* 深潭墨青 */
+    --sky-mid:    #3d9a94; /* 蓮葉青碧 */
+    --sky-bot:    #d8ece4; /* 水面晨霧 */
+    --sun:        #ffd9a0; /* 暖晨光暈 */
+    --white:      #0f3b44;
+    --gray:       #4a7d78;
+    --card-bg:    rgba(255,255,255,0.72);
+    --card-border:rgba(255,255,255,0.9);
+    --gold:       #c9a227;
+    --gold-dark:  #a8861c;
+    --ok:         #16a34a;
+    --ok-bg:      rgba(22,163,74,0.1);
+    --ng:         #dc2626;
+    --ng-bg:      rgba(220,38,38,0.1);
+    --shadow:     rgba(15,76,92,0.18);
+    --text-dark:  #0f3b44;
+    --text-mid:   #15616d;
+    --text-lite:  #4d8280;
+}
+
+html { scroll-behavior: smooth; }
+body {
+    min-height: 100vh;
+    font-family: 'Noto Sans TC', sans-serif;
+    overflow-x: hidden;
+    line-height: 1.6;
+    color: var(--text-dark);
+    background: var(--sky-top);
+}
+
+/* ══════════════════════════════════
+   SKY / POND BACKGROUND
+   ══════════════════════════════════ */
+.sky-bg {
+    position: fixed; inset: 0; z-index: 0;
+    background: linear-gradient(180deg,
+        var(--sky-top) 0%,
+        var(--sky-mid) 40%,
+        var(--sky-bot) 80%,
+        #ffffff 100%);
+    overflow: hidden;
+}
+
+/* Sun (misty dawn glow) */
+.sun {
+    position: absolute;
+    top: -60px; right: 10%;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, #fff6e6 0%, var(--sun) 40%, #f4a261 80%, transparent 100%);
+    border-radius: 50%;
+    box-shadow: 0 0 80px 30px rgba(255,217,160,0.45), 0 0 160px 60px rgba(255,217,160,0.18);
+    animation: sunRise 3s ease-out both;
+}
+@keyframes sunRise {
+    from { transform: translateY(60px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* Sun rays */
+.sun-rays {
+    position: absolute;
+    top: -90px; right: calc(10% - 70px);
+    width: 340px; height: 340px;
+    animation: spinRays 20s linear infinite;
+}
+.sun-rays::before, .sun-rays::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-conic-gradient(
+        rgba(255,217,160,0.2) 0deg 10deg,
+        transparent 10deg 20deg
+    );
+    border-radius: 50%;
+}
+@keyframes spinRays { to { transform: rotate(360deg); } }
+
+/* Clouds (mist) */
+.clouds-layer { position: absolute; inset: 0; pointer-events: none; }
+.cloud {
+    position: absolute;
+    background: white;
+    border-radius: 50px;
+    opacity: 0.9;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.08));
+    animation: driftCloud linear infinite;
+}
+.cloud::before, .cloud::after {
+    content: '';
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+}
+.c1 { width:160px;height:50px; top:8%; left:-180px; animation-duration:32s; animation-delay:0s; }
+.c1::before { width:80px;height:70px; top:-35px; left:20px; }
+.c1::after  { width:60px;height:55px; top:-28px; left:65px; }
+
+.c2 { width:220px;height:60px; top:15%; left:-250px; animation-duration:45s; animation-delay:-14s; opacity:0.85; }
+.c2::before { width:100px;height:80px; top:-40px; left:30px; }
+.c2::after  { width:75px; height:65px; top:-32px; left:95px; }
+
+.c3 { width:120px;height:40px; top:5%;  left:-140px; animation-duration:28s; animation-delay:-7s; opacity:0.75; }
+.c3::before { width:60px;height:55px; top:-28px; left:15px; }
+.c3::after  { width:50px;height:45px; top:-22px; left:52px; }
+
+.c4 { width:180px;height:55px; top:22%; left:-200px; animation-duration:38s; animation-delay:-21s; }
+.c4::before { width:90px;height:75px; top:-38px; left:25px; }
+.c4::after  { width:65px;height:55px; top:-28px; left:80px; }
+
+.c5 { width:140px;height:45px; top:30%; left:-160px; animation-duration:42s; animation-delay:-30s; opacity:0.8; }
+.c5::before { width:70px;height:60px; top:-30px; left:18px; }
+.c5::after  { width:55px;height:48px; top:-24px; left:60px; }
+
+@keyframes driftCloud {
+    from { transform: translateX(0); }
+    to   { transform: translateX(calc(100vw + 300px)); }
+}
+
+.sky-ground {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 80px;
+    background: linear-gradient(180deg, transparent, rgba(216,236,228,0.5));
+}
+
+/* ══════════════════════════════════
+   SOUND TOGGLE
+   ══════════════════════════════════ */
+.sound-btn {
+    position: fixed;
+    top: 1.3rem; right: 1.3rem;
+    z-index: 200;
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.8);
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+.sound-btn:hover { background: rgba(255,255,255,0.95); transform: scale(1.08); }
+
+/* 周敦頴 character */
+.character-wrap {
+    position: fixed;
+    bottom: 0; right: 1.5rem;
+    z-index: 100;
+    width: 130px;
+    pointer-events: none;
+    animation: characterSway 4s ease-in-out infinite;
+    transform-origin: bottom center;
+}
+.character-wrap img {
+    width: 100%; display: block;
+}
+@keyframes characterSway {
+    0%,100% { transform: rotate(-4deg); }
+    50%      { transform: rotate(4deg);  }
+}
+
+/* ══════════════════════════════════
+   TRANSITION OVERLAY
+   ══════════════════════════════════ */
+.overlay {
+    position: fixed; inset: 0;
+    background: rgba(255,255,255,0.85);
+    z-index: 500;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.32s ease;
+    backdrop-filter: blur(4px);
+}
+.overlay.on { opacity: 1; pointer-events: all; }
+
+/* ══════════════════════════════════
+   SCREEN SYSTEM
+   ══════════════════════════════════ */
+.screen {
+    position: relative; z-index: 10;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 2.5rem 1.5rem;
+    animation: screenIn 0.5s ease both;
+}
+.screen.hidden { display: none; }
+@keyframes screenIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ══════════════════════════════════
+   HOME SCREEN
+   ══════════════════════════════════ */
+.home-hero {
+    text-align: center;
+    margin-bottom: 2.8rem;
+}
+.home-eyebrow {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.9);
+    letter-spacing: 0.4em;
+    margin-bottom: 1rem;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+.home-main-title {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: clamp(3rem, 8vw, 5.5rem);
+    color: #fff;
+    text-shadow:
+        0 3px 20px rgba(0,0,0,0.2),
+        0 0 60px rgba(255,255,255,0.4);
+    letter-spacing: 0.25em;
+    line-height: 1.1;
+}
+.home-sub-title {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    color: rgba(255,255,255,0.75);
+    letter-spacing: 0.45em;
+    margin-top: 0.4rem;
+}
+.home-desc {
+    font-size: 0.88rem;
+    color: rgba(255,255,255,0.8);
+    margin-top: 1.1rem;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+
+.sel-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.4rem;
+    width: 100%; max-width: 760px;
+    margin-bottom: 2.5rem;
+}
+.sel-panel {
+    background: rgba(255,255,255,0.78);
+    border: 2px solid rgba(255,255,255,0.95);
+    border-radius: 22px;
+    padding: 1.6rem;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 8px 32px rgba(15,76,92,0.18);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.sel-panel:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 40px rgba(15,76,92,0.24);
+}
+.sel-head {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-mid);
+    letter-spacing: 0.2em;
+    margin-bottom: 1.1rem;
+}
+.choice-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.choice-btn {
+    display: flex; align-items: center;
+    gap: 0.85rem;
+    padding: 0.9rem 1.1rem;
+    border: 2px solid rgba(21,97,109,0.15);
+    border-radius: 14px;
+    background: rgba(255,255,255,0.6);
+    color: var(--text-dark);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    text-align: left; width: 100%;
+}
+.choice-btn:hover {
+    border-color: rgba(15,76,92,0.5);
+    background: rgba(214,238,233,0.85);
+    transform: translateX(3px);
+}
+.choice-btn.picked {
+    border-color: var(--sky-top);
+    background: rgba(15,76,92,0.12);
+    color: var(--sky-top);
+    box-shadow: 0 0 0 3px rgba(15,76,92,0.15);
+}
+.choice-icon { font-size: 1.55rem; flex-shrink: 0; }
+.choice-info { flex: 1; }
+.choice-name { font-weight: 600; line-height: 1.3; }
+.choice-hint { font-size: 0.73rem; color: var(--text-lite); margin-top: 0.18rem; }
+.choice-btn.picked .choice-hint { color: rgba(15,76,92,0.7); }
+
+.btn-start {
+    padding: 1.05rem 4.5rem;
+    background: linear-gradient(135deg, #2a8c8f, #0f4c5c);
+    border: none; border-radius: 100px;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 1.15rem; font-weight: 700;
+    color: #fff; cursor: pointer;
+    letter-spacing: 0.12em;
+    transition: all 0.28s ease;
+    box-shadow: 0 8px 32px rgba(15,76,92,0.4), 0 2px 8px rgba(0,0,0,0.15);
+    position: relative; overflow: hidden;
+}
+.btn-start::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.25), transparent);
+    border-radius: inherit;
+}
+.btn-start:hover:not(:disabled) {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(15,76,92,0.5);
+}
+.btn-start:disabled { opacity: 0.38; cursor: not-allowed; transform: none; }
+
+.divider {
+    width: 100%; max-width: 400px; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+    margin: 2rem auto 1rem;
+}
+.divider-note { text-align: center; font-size: 0.76rem; color: rgba(255,255,255,0.75); }
+
+/* ══════════════════════════════════
+   BACK BUTTON
+   ══════════════════════════════════ */
+.btn-back {
+    position: fixed;
+    top: 1.3rem; left: 1.3rem; z-index: 200;
+    display: flex; align-items: center; gap: 0.4rem;
+    padding: 0.5rem 1.15rem;
+    background: rgba(255,255,255,0.75);
+    border: 2px solid rgba(255,255,255,0.9);
+    border-radius: 100px;
+    color: var(--text-mid);
+    font-size: 0.82rem;
+    font-family: 'Noto Sans TC', sans-serif;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+}
+.btn-back:hover { background: rgba(255,255,255,0.95); color: var(--sky-top); }
+
+/* ══════════════════════════════════
+   GAME SCREEN
+   ══════════════════════════════════ */
+.game-inner {
+    width: 100%; max-width: 840px;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 1.1rem;
+}
+
+.pg-wrap { width: 100%; }
+.pg-meta {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 0.6rem;
+}
+.pg-level { font-size: 0.82rem; color: #fff; font-weight: 600; letter-spacing: 0.1em; text-shadow: 0 1px 4px rgba(0,0,0,0.2); }
+.pg-count  { font-size: 0.78rem; color: rgba(255,255,255,0.8); }
+.pg-track {
+    height: 7px;
+    background: rgba(255,255,255,0.35);
+    border-radius: 10px; overflow: hidden;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+.pg-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ffd9a0, #e8a87c);
+    border-radius: 10px;
+    transition: width 0.65s cubic-bezier(0.4,0,0.2,1);
+    box-shadow: 0 0 10px rgba(255,217,160,0.6);
+}
+
+.frag-row {
+    display: flex; gap: 0.55rem;
+    flex-wrap: wrap; justify-content: center; width: 100%;
+}
+.frag-slot {
+    width: 50px; height: 50px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 1.4rem;
+    color: rgba(255,255,255,0.4);
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(4px);
+    transition: all 0.4s ease;
+}
+.frag-slot.lit {
+    border-color: var(--sun);
+    color: #0f3b44;
+    background: rgba(255,217,160,0.92);
+    box-shadow: 0 0 18px rgba(255,217,160,0.7), 0 3px 8px rgba(0,0,0,0.1);
+    animation: slotBurst 0.55s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes slotBurst {
+    from { transform: scale(0.3) rotate(-20deg); opacity: 0; }
+    to   { transform: scale(1) rotate(0deg);     opacity: 1; }
+}
+
+.scene-wrap {
+    width: 100%;
+    display: flex; align-items: flex-start; gap: 1rem;
+    padding: 1.15rem 1.5rem;
+    background: rgba(255,255,255,0.72);
+    border: 2px solid rgba(255,255,255,0.9);
+    border-radius: 18px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 20px rgba(15,76,92,0.1);
+}
+.scene-icon { font-size: 1.9rem; flex-shrink: 0; }
+.scene-body { font-size: 0.87rem; color: var(--text-lite); font-style: italic; line-height: 1.75; }
+
+.q-card {
+    width: 100%;
+    background: rgba(255,255,255,0.82);
+    border: 2px solid rgba(255,255,255,0.95);
+    border-radius: 24px;
+    padding: 2.1rem 2.2rem;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 16px 50px rgba(15,76,92,0.15), 0 4px 12px rgba(0,0,0,0.06);
+}
+.q-text {
+    font-family: 'Noto Serif TC', serif;
+    font-size: clamp(1rem, 2.5vw, 1.15rem);
+    line-height: 1.9; color: var(--text-dark);
+    margin-bottom: 1.8rem;
+}
+.ans-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.85rem;
+}
+.ans-btn {
+    display: flex; align-items: flex-start;
+    gap: 0.7rem;
+    padding: 0.9rem 1.05rem;
+    border: 2px solid rgba(21,97,109,0.15);
+    background: rgba(255,255,255,0.6);
+    border-radius: 14px;
+    color: var(--text-dark);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 0.88rem;
+    cursor: pointer; transition: all 0.2s ease;
+    text-align: left; line-height: 1.5;
+}
+.ans-btn:hover:not(:disabled) {
+    border-color: var(--sky-top);
+    background: rgba(214,238,233,0.85);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(15,76,92,0.15);
+}
+.ans-badge {
+    min-width: 26px; height: 26px;
+    border-radius: 7px;
+    background: rgba(15,76,92,0.12);
+    color: var(--sky-top);
+    font-size: 0.74rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+    transition: background 0.2s ease;
+}
+.ans-btn:hover:not(:disabled) .ans-badge { background: rgba(15,76,92,0.22); }
+.ans-btn.correct {
+    border-color: var(--ok);
+    background: var(--ok-bg);
+    color: var(--ok);
+}
+.ans-btn.correct .ans-badge { background: rgba(22,163,74,0.18); color: var(--ok); }
+.ans-btn.wrong {
+    border-color: var(--ng);
+    background: var(--ng-bg);
+    color: var(--ng);
+}
+.ans-btn.wrong .ans-badge { background: rgba(220,38,38,0.18); color: var(--ng); }
+.ans-btn:disabled { cursor: not-allowed; }
+
+.fb-box { width: 100%; padding: 1.2rem 1.6rem; border-radius: 16px; display: none; }
+.fb-box.show { display: block; }
+.fb-box.fb-ok { background: rgba(22,163,74,0.08); border: 2px solid rgba(22,163,74,0.3); }
+.fb-box.fb-ng { background: rgba(220,38,38,0.07); border: 2px solid rgba(220,38,38,0.25); }
+.fb-head { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.5rem; }
+.fb-box.fb-ok .fb-head { color: var(--ok); }
+.fb-box.fb-ng .fb-head { color: var(--ng); }
+.fb-explain { font-size: 0.84rem; color: var(--text-lite); line-height: 1.75; }
+.fb-frag { margin-top: 0.75rem; display: none; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: var(--gold-dark); }
+.fb-frag.show { display: flex; }
+.fb-frag-char { font-family: 'ZCOOL XiaoWei', serif; font-size: 1.55rem; color: var(--gold-dark); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15)); }
+
+.action-row { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; width: 100%; }
+.btn-next {
+    padding: 0.88rem 3rem;
+    background: linear-gradient(135deg, #2a8c8f, #0f4c5c);
+    border: none; border-radius: 100px;
+    font-family: 'Noto Serif TC', serif; font-size: 0.95rem; font-weight: 700;
+    color: #fff; cursor: pointer; transition: all 0.25s ease;
+    box-shadow: 0 6px 24px rgba(15,76,92,0.35);
+    display: none;
+}
+.btn-next:hover { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(15,76,92,0.45); }
+.btn-retry {
+    padding: 0.88rem 3rem;
+    background: transparent;
+    border: 2px solid rgba(220,38,38,0.4);
+    border-radius: 100px;
+    font-family: 'Noto Serif TC', serif; font-size: 0.95rem;
+    color: var(--ng); cursor: pointer; transition: all 0.25s ease;
+    display: none;
+}
+.btn-retry:hover { background: var(--ng-bg); border-color: var(--ng); }
+
+@keyframes shake {
+    0%,100% { transform: translateX(0); }
+    15%  { transform: translateX(-9px); }
+    30%  { transform: translateX(9px); }
+    45%  { transform: translateX(-6px); }
+    60%  { transform: translateX(6px); }
+    75%  { transform: translateX(-3px); }
+    90%  { transform: translateX(3px); }
+}
+.shaking { animation: shake 0.48s ease; }
+
+/* ══════════════════════════════════
+   NAME INPUT SCREEN
+   ══════════════════════════════════ */
+.name-wrap {
+    text-align: center;
+    max-width: 520px; width: 100%;
+}
+.name-icon { font-size: 4rem; margin-bottom: 1.2rem; animation: bounce 1s ease infinite alternate; }
+@keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-10px); } }
+.name-title {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: clamp(1.7rem, 4vw, 2.5rem);
+    color: #fff; text-shadow: 0 2px 12px rgba(0,0,0,0.2);
+    margin-bottom: 0.6rem;
+}
+.name-sub { font-size: 0.9rem; color: rgba(255,255,255,0.85); margin-bottom: 2rem; }
+.name-card {
+    background: rgba(255,255,255,0.82);
+    border: 2px solid rgba(255,255,255,0.95);
+    border-radius: 24px;
+    padding: 2.2rem 2rem;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 16px 50px rgba(15,76,92,0.18);
+    margin-bottom: 1.5rem;
+}
+.name-label {
+    font-size: 0.88rem; color: var(--text-mid); font-weight: 600;
+    margin-bottom: 0.8rem; display: block; text-align: left;
+}
+.name-input {
+    width: 100%; padding: 0.9rem 1.2rem;
+    border: 2px solid rgba(15,76,92,0.25);
+    border-radius: 12px;
+    font-family: 'Noto Serif TC', serif; font-size: 1.2rem;
+    color: var(--text-dark);
+    background: rgba(255,255,255,0.9);
+    outline: none; transition: all 0.22s ease;
+    text-align: center; letter-spacing: 0.08em;
+}
+.name-input:focus { border-color: var(--sky-top); box-shadow: 0 0 0 3px rgba(15,76,92,0.15); }
+.btn-confirm {
+    padding: 1rem 4rem;
+    background: linear-gradient(135deg, #ffd9a0, #e8a87c);
+    border: none; border-radius: 100px;
+    font-family: 'Noto Serif TC', serif; font-size: 1.1rem; font-weight: 700;
+    color: #0f3b44; cursor: pointer; transition: all 0.28s ease;
+    box-shadow: 0 8px 28px rgba(232,168,124,0.45);
+    margin-top: 1.2rem;
+}
+.btn-confirm:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(232,168,124,0.55); }
+.btn-confirm:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+/* ══════════════════════════════════
+   VICTORY / CERTIFICATE SCREEN
+   ══════════════════════════════════ */
+.victory-wrap { text-align: center; max-width: 720px; width: 100%; }
+.victory-icon { font-size: 4.5rem; margin-bottom: 1rem; display: inline-block; animation: bounce 1s ease infinite alternate; }
+.victory-title {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: clamp(1.8rem, 5vw, 3rem);
+    color: #fff; text-shadow: 0 2px 16px rgba(0,0,0,0.2);
+    margin-bottom: 0.5rem;
+}
+.victory-sub { font-size: 0.9rem; color: rgba(255,255,255,0.85); margin-bottom: 2rem; }
+
+.cert-box {
+    position: relative;
+    background: linear-gradient(160deg, #f4fbf7 0%, #dff0ea 40%, #f8f6ea 100%);
+    border: 3px solid var(--gold);
+    border-radius: 24px;
+    padding: 2.8rem 2.2rem;
+    margin-bottom: 2rem;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(201,162,39,0.28), 0 8px 24px rgba(0,0,0,0.1);
+}
+.cert-box::before {
+    content: '';
+    position: absolute; inset: 8px;
+    border: 1.5px dashed rgba(201,162,39,0.4);
+    border-radius: 18px;
+    pointer-events: none;
+}
+.cert-header {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: 0.75rem;
+    color: rgba(120,110,60,0.7);
+    letter-spacing: 0.5em;
+    margin-bottom: 1.5rem;
+}
+.cert-title-zh {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    color: #14555f;
+    margin-bottom: 0.5rem;
+}
+.cert-student-name {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    color: #0f6b6b;
+    text-shadow: 0 2px 8px rgba(15,107,107,0.2);
+    margin: 0.5rem 0;
+    letter-spacing: 0.1em;
+}
+.cert-text {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 0.95rem; color: #3d5c52;
+    line-height: 1.9; margin: 0.8rem 0;
+}
+.cert-divider {
+    width: 140px; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 1.2rem auto;
+}
+.cert-chars {
+    display: flex; justify-content: center;
+    gap: 0.65rem; flex-wrap: wrap; margin: 1rem 0;
+}
+.cert-char {
+    width: 56px; height: 56px;
+    border: 2px solid rgba(201,162,39,0.55);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 1.9rem;
+    color: #14555f;
+    background: rgba(201,162,39,0.14);
+    animation: certFloat 3.5s ease-in-out infinite;
+}
+@keyframes certFloat {
+    0%,100% { transform: translateY(0); }
+    50%      { transform: translateY(-6px); }
+}
+.cert-phrase {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: clamp(1.3rem, 3.5vw, 2rem);
+    color: #14555f; letter-spacing: 0.15em; margin: 0.5rem 0;
+}
+.cert-score { font-size: 0.88rem; color: #3d5c52; margin: 0.3rem 0; }
+.cert-date { font-size: 0.8rem; color: rgba(61,92,82,0.7); margin-top: 0.3rem; }
+.cert-seal {
+    position: absolute; bottom: 1.5rem; right: 2rem;
+    width: 72px; height: 72px;
+    border: 3px solid rgba(180,110,60,0.5);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'ZCOOL XiaoWei', serif; font-size: 0.95rem;
+    color: rgba(150,70,40,0.8); letter-spacing: 0.05em;
+    text-align: center; line-height: 1.5;
+    background: rgba(201,162,39,0.12);
+    box-shadow: inset 0 0 0 2px rgba(201,162,39,0.28);
+}
+
+.quote-block {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 0.9rem; color: rgba(255,255,255,0.88);
+    line-height: 2; margin-bottom: 2rem;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+.quote-attr { font-size: 0.78rem; color: rgba(255,255,255,0.65); }
+.final-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+.btn-home {
+    padding: 0.88rem 2.6rem;
+    background: rgba(255,255,255,0.9);
+    border: none; border-radius: 100px;
+    font-family: 'Noto Serif TC', serif; font-size: 0.95rem; font-weight: 700;
+    color: var(--sky-top); cursor: pointer; transition: all 0.25s ease;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.1);
+}
+.btn-home:hover { transform: translateY(-2px); background: #fff; }
+.btn-replay {
+    padding: 0.88rem 2.6rem;
+    background: transparent;
+    border: 2px solid rgba(255,255,255,0.7);
+    border-radius: 100px;
+    font-family: 'Noto Serif TC', serif; font-size: 0.95rem;
+    color: #fff; cursor: pointer; transition: all 0.25s ease;
+}
+.btn-replay:hover { background: rgba(255,255,255,0.15); }
+
+/* Confetti */
+.confetti-p {
+    position: fixed; pointer-events: none; z-index: 999;
+    animation: cFall var(--dur,3s) ease-in var(--dl,0s) forwards;
+}
+@keyframes cFall {
+    0%   { transform: translateY(-15px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(108vh) rotate(560deg); opacity: 0; }
+}
+
+@media (max-width: 600px) {
+    .sel-grid  { grid-template-columns: 1fr; }
+    .ans-grid  { grid-template-columns: 1fr; }
+    .q-card    { padding: 1.5rem 1.2rem; }
+    .frag-slot { width: 40px; height: 40px; font-size: 1.15rem; }
+    .cert-char { width: 46px; height: 46px; font-size: 1.55rem; }
+    .character-wrap { width: 90px; }
+}
+</style>
+</head>
+<body>
+
+<div class="sky-bg">
+    <div class="sun-rays"></div>
+    <div class="sun"></div>
+    <div class="clouds-layer">
+        <div class="cloud c1"></div>
+        <div class="cloud c2"></div>
+        <div class="cloud c3"></div>
+        <div class="cloud c4"></div>
+        <div class="cloud c5"></div>
+    </div>
+    <div class="sky-ground"></div>
+</div>
+
+<button class="sound-btn" id="soundBtn" onclick="toggleSound()" title="音效開關">🔊</button>
+
+<div class="character-wrap" id="characterWrap">
+    <img src="assets/img/character.png" alt="周敦頤" onerror="this.parentElement.style.display='none'">
+</div>
+
+<div class="overlay" id="overlay"></div>
+
+<audio id="bgm" src="assets/audio/Music_Trap_Drama.mp3" loop preload="auto"></audio>
+<audio id="sfxWin" src="assets/audio/Awards.m4a" preload="auto"></audio>
+
+<!-- ══════════════════════════════════
+     HOME SCREEN
+     ══════════════════════════════════ -->
+<div class="screen" id="homeScreen">
+    <div class="home-hero">
+        <p class="home-eyebrow" id="homeEyebrow">🪷 閱讀密室逃脫</p>
+        <h1 class="home-main-title" id="homeMainTitle">愛蓮說</h1>
+        <p class="home-sub-title" id="homeSubTitle">蓮心・君子風骨</p>
+        <p class="home-desc" id="homeDesc">北宋周敦頤以蓮喻君子，一百一十九字寫盡高潔情操。請挑戰五關或十關密室，讀懂「出淤泥而不染」的深意！</p>
+    </div>
+
+    <div class="sel-grid">
+        <div class="sel-panel">
+            <div class="sel-head">🎯 選擇難度</div>
+            <div class="choice-list">
+                <button class="choice-btn" id="cBeginner" onclick="pick('diff','beginner',this)">
+                    <span class="choice-icon">🌱</span>
+                    <div class="choice-info">
+                        <div class="choice-name">新手探索者</div>
+                        <div class="choice-hint">課文大意、字詞與基本理解</div>
+                    </div>
+                </button>
+                <button class="choice-btn" id="cExpert" onclick="pick('diff','expert',this)">
+                    <span class="choice-icon">🔥</span>
+                    <div class="choice-info">
+                        <div class="choice-name">高手挑戰者</div>
+                        <div class="choice-hint">層次剖析、寫作架構與深度邏輯</div>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <div class="sel-panel">
+            <div class="sel-head">🗝️ 選擇關卡數</div>
+            <div class="choice-list">
+                <button class="choice-btn" id="c5" onclick="pick('levels',5,this)">
+                    <span class="choice-icon">🚪</span>
+                    <div class="choice-info">
+                        <div class="choice-name">五關密室</div>
+                        <div class="choice-hint">約 3 分鐘，輕鬆體驗</div>
+                    </div>
+                </button>
+                <button class="choice-btn" id="c10" onclick="pick('levels',10,this)">
+                    <span class="choice-icon">🏯</span>
+                    <div class="choice-info">
+                        <div class="choice-name">十關迷城</div>
+                        <div class="choice-hint">約 5 分鐘，完整挑戰</div>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <button class="btn-start" id="btnStart" onclick="startGame()" disabled>✨ 開始逃脫</button>
+    <div class="divider"></div>
+    <p class="divider-note">每關答對即獲得密碼碎片 · 集齊碎片方能逃出密室</p>
+</div>
+
+<!-- ══════════════════════════════════
+     GAME SCREEN
+     ══════════════════════════════════ -->
+<div class="screen hidden" id="gameScreen">
+    <button class="btn-back" onclick="goHome()">← 返回</button>
+    <div class="game-inner">
+        <div class="pg-wrap">
+            <div class="pg-meta">
+                <span class="pg-level" id="pgLevel">第 1 關</span>
+                <span class="pg-count" id="pgCount">0 / 5</span>
+            </div>
+            <div class="pg-track"><div class="pg-fill" id="pgFill" style="width:0%"></div></div>
+        </div>
+        <div class="frag-row" id="fragRow"></div>
+        <div class="scene-wrap">
+            <span class="scene-icon" id="sceneIcon">🪷</span>
+            <div class="scene-body" id="sceneBody"></div>
+        </div>
+        <div class="q-card" id="qCard">
+            <div class="q-text" id="qText"></div>
+            <div class="ans-grid" id="ansGrid"></div>
+        </div>
+        <div class="fb-box" id="fbBox">
+            <div class="fb-head" id="fbHead"></div>
+            <div class="fb-explain" id="fbExplain"></div>
+            <div class="fb-frag" id="fbFrag">
+                <span>🔑 獲得碎片：</span>
+                <span class="fb-frag-char" id="fbFragChar"></span>
+            </div>
+        </div>
+        <div class="action-row">
+            <button class="btn-retry" id="btnRetry" onclick="retryLevel()">🔄 再試一次</button>
+            <button class="btn-next"  id="btnNext"  onclick="nextLevel()">下一關 →</button>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════
+     NAME INPUT SCREEN
+     ══════════════════════════════════ -->
+<div class="screen hidden" id="nameScreen">
+    <div class="name-wrap">
+        <div class="name-icon">🏆</div>
+        <h2 class="name-title">恭喜完成所有關卡！</h2>
+        <p class="name-sub">請輸入您的姓名，領取專屬結業證書</p>
+        <div class="name-card">
+            <label class="name-label" for="nameInput">✏️ 學生姓名</label>
+            <input class="name-input" id="nameInput" type="text" placeholder="請輸入姓名" maxlength="10"
+                oninput="document.getElementById('btnConfirm').disabled = this.value.trim().length === 0">
+            <br>
+            <button class="btn-confirm" id="btnConfirm" onclick="showVictory()" disabled>
+                🎓 領取證書 →
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════
+     VICTORY SCREEN
+     ══════════════════════════════════ -->
+<div class="screen hidden" id="victoryScreen">
+    <div class="victory-wrap">
+        <div class="victory-icon">🎊</div>
+        <h2 class="victory-title">成功逃脫！</h2>
+        <p class="victory-sub">密碼碎片全數集齊，解開關卡的終極密語</p>
+
+        <div class="cert-box">
+            <div class="cert-seal" id="certSealText">出淤<br>不染</div>
+            <div class="cert-header">✦ 愛蓮說・閱讀密室逃脫 · 完成證書 ✦</div>
+            <div class="cert-title-zh">茲證明</div>
+            <div class="cert-student-name" id="certName">同學</div>
+            <div class="cert-text">已完成〈愛蓮說〉閱讀密室逃脫</div>
+            <div class="cert-text">難度：<strong id="certDiff">新手探索者</strong>　關卡：<strong id="certLevels">五關密室</strong></div>
+            <div class="cert-divider"></div>
+            <div class="cert-text" style="font-size:0.8rem;">解鎖密語</div>
+            <div class="cert-chars" id="certChars"></div>
+            <div class="cert-phrase" id="certPhrase"></div>
+            <div class="cert-divider"></div>
+            <div class="cert-score" id="certScore"></div>
+            <div class="cert-date" id="certDate"></div>
+        </div>
+
+        <p class="quote-block" id="victoryQuote">
+            「水陸草木之花，可愛者甚蕃。晉陶淵明獨愛菊，自李唐來，世人盛愛牡丹。予獨愛蓮之出淤泥而不染，濯清漣而不妖……」<br>
+            <span class="quote-attr" id="victoryQuoteAttr">—— 北宋・周敦頤〈愛蓮說〉</span>
+        </p>
+        <div class="final-btns">
+            <button class="btn-home"   onclick="goHome()">🏠 返回首頁</button>
+            <button class="btn-replay" onclick="replayGame()">🔄 再玩一次</button>
+        </div>
+    </div>
+</div>
+
+<script>
+/* ─────────────────────────────────
+   STATIC DATA — 場景敘述（蓮池主題）
+   ───────────────────────────────── */
+const SCENARIOS = [
+    { icon:'🪷', text:'你站在一方蓮池邊，晨霧尚未散去，池心一朵蓮花輕輕顫動，唯有讀懂它的心意才能前進……' },
+    { icon:'🍃', text:'石橋盡頭的池心浮起一枚蓮葉，葉面題著古老的偈語，答案就藏在其間……' },
+    { icon:'📖', text:'菡萏亭中，一卷以淤泥為箋的殘卷半掩於蓮葉之下，等待著有緣人翻開……' },
+    { icon:'🔍', text:'池畔石碑字跡斑駁，隱約可辨「中通外直」四字，須細細推敲才能尋得暗門……' },
+    { icon:'🌫️', text:'濃霧籠罩了整片蓮池，遠處隱約傳來歌聲，唯有清晰的分辨力才能破除迷障……' },
+    { icon:'🚪', text:'竹林深處有一道圓門，門上半刻「隱逸」、半刻「富貴」，必須作出判斷才能通過……' },
+    { icon:'✨', text:'蓮葉上凝著一顆晶瑩的水珠，倒映出破碎的文字，答案彷彿隱藏於段落之間……' },
+    { icon:'🏛️', text:'濂溪書堂的門扉半掩，堂中正中央立著一塊無字石碑，等待你補上君子之道……' },
+    { icon:'🛡️', text:'一位守門的老者緩緩睜開雙眼，提出最後的關鍵叩問，距離破關只剩臨門一腳……' },
+    { icon:'🌟', text:'終極考驗！漫天蓮瓣飛舞，滿池清香流動，照亮了逃離密室的最後關卡，答對即可逃脫！' }
+];
+
+/* ─────────────────────────────────
+   【自訂輸入區】
+   密碼碎片與通關密語（取自〈愛蓮說〉原文）
+   ───────────────────────────────── */
+const FRAGMENTS = {
+    5:  ['蓮','花','映','君','子'],
+    10: ['愛','蓮','說','・','出','淤','泥','而','不','染']
+};
+const PHRASES = {
+    5:  '蓮花映君子',
+    10: '愛蓮說・出淤泥而不染'
+};
+const DIFF_LABEL = { beginner:'🌱 新手探索者', expert:'🔥 高手挑戰者' };
+const LEVEL_LABEL = { 5:'🚪 五關密室', 10:'🏯 十關迷城' };
+
+/* ─────────────────────────────────
+   【自訂題庫區】
+   beginner (16題) ＝ 課文大意、字詞義、象徵配對、基本理解
+   expert   (16題) ＝ 層次剖析、寫作手法、修辭深究、比較閱讀
+   ★ 正確答案固定放在 opts[0]，引擎會自動隨機打亂
+   ★ 錯誤選項長度均與正確答案相當或更長，避免用字數猜答案
+   ───────────────────────────────── */
+const QDB = {
+    beginner: [
+        {
+            q: '〈愛蓮說〉的作者周敦頤是北宋理學的開山祖師，下列何者最符合他在文中的自我期許？',
+            opts: [
+                '處於污濁的環境仍能潔身自愛，不同流合污，卻又不消極逃避而堅守正道',
+                '遠離人群隱居山林，以不問世事來保全自己高潔的名節與清白無瑕的品格',
+                '廣交權貴與當世名流，靠著左右逢源的圓融手腕在仕途上步步高升通達',
+                '效法陶淵明採菊東籬下，以悠然見南山的閒適態度看待世事的紛紛擾擾'
+            ],
+            ans: 0,
+            exp: '作者藉蓮花自況，「出淤泥而不染」象徵潔身自愛、不同流合污，「可遠觀而不可褻玩焉」則顯示他並非消極避世，而是要在亂世中守住節操。'
+        },
+        {
+            q: '下列有關〈愛蓮說〉全文寫作順序的敘述，何者正確？',
+            opts: [
+                '先泛論眾花可愛且人各有所好，再描寫蓮的特質，最後以菊、牡丹襯托抒發感懷',
+                '直接以蓮花的形貌特徵開篇，再逐一說明菊與牡丹的差異來作為全篇的結語收束',
+                '依時間先後順序，先寫陶淵明愛菊的典故，再寫世人爭相愛牡丹的盛況與影響',
+                '以蓮為題材議論當朝時政得失，並藉花影射皇帝重用小人而忽視賢才的弊病'
+            ],
+            ans: 0,
+            exp: '課本指出本文可分三層：第一層說世上可愛的花很多但人各有所好；第二層說明自己唯獨愛蓮及其原因；第三層是藉花慨嘆時俗中潔身自好者少、趨附權勢者多。'
+        },
+        {
+            q: '「予謂菊，花之隱逸者也」中的「謂」字，在文中的意思是什麼？',
+            opts: [
+                '認為、以为。我認為菊花是花中的隱逸者，下文的「謂」也都是這個意思',
+                '告诉、对某人说话。我把心中的看法完整地告訴了對方知道答案為何',
+                '客人、受人拜访。這個字在古文裡專指前來拜訪主人家的賓客',
+                '疲惫、困倦。这个字表示身心俱疲、無法再支撐下去的那種狀態'
+            ],
+            ans: 0,
+            exp: '「謂」是「認為」的意思。課本註解指出，本文的「謂」是認為，對照「宜乎眾矣」中的「宜」則是「應當」，兩字不可混淆。'
+        },
+        {
+            q: '「出淤泥而不染」一句中的「染」字，最接近下列哪一個意思？',
+            opts: [
+                '沾染、蒙受汙垢。蓮花從水底爛泥中長出來，卻不沾染一點污泥的氣味',
+                '染色、上色。蓮花被染上不同的顏色，因而呈現出千姿百態的的不同風貌',
+                '感染、染病。蓮花雖然長在污水中，卻因為抵抗力強而不容易染上病蟲害',
+                '诱惑、惑乱。蓮花雖然長在污泥之旁，卻不會被外界的慾望與誘惑所迷惑'
+            ],
+            ans: 0,
+            exp: '「染」是「沾染」的意思。「淤」指沉積、阻塞，「出淤泥而不染」正是說蓮花由水底爛泥中長出，卻不受汙染，象徵君子潔身自愛、不同流合污。'
+        },
+        {
+            q: '〈愛蓮說〉中用來襯托蓮花的兩種花是下列哪一組？',
+            opts: [
+                '菊花與牡丹。作者以菊花作陪襯、以牡丹作反襯，來凸顯蓮花的高潔品格',
+                '桃花與菊花。作者以桃花襯托蓮花的清麗、以菊花襯托蓮花的堅韌不屈',
+                '梅花與蘭花。作者以梅花襯托蓮花的堅忍不拔、以蘭花襯托蓮花的幽雅',
+                '牡丹與桂花。作者以牡丹襯托蓮花的富貴吉祥、以桂花襯托蓮花的香甜'
+            ],
+            ans: 0,
+            exp: '課本指出：藉牡丹象徵富貴，追慕者眾多，反襯蓮花高潔但愛蓮者卻甚少；以菊花作陪襯，凸顯蓮花在汙濁環境中保持高貴情操，較菊花的消極避世更加可貴。'
+        },
+        {
+            q: '「香遠益清」一句中的「益」字，在文中的意思是什麼？',
+            opts: [
+                '更加、愈……。距離愈遠，愈能感受到蓮花那股清雅的香氣與韻味',
+                '利益、好處。蓮花散發香氣，是它對觀賞者與世人所提供的一種好處',
+                '增加、增益。蓮花的香氣會隨著時光流逝而愈發變得更加濃郁厚重',
+                '已经、停止。香氣傳得愈遠，就表示蓮花的香氣已逐漸消散而不復存在'
+            ],
+            ans: 0,
+            exp: '「益」是「更加」的意思。「香遠益清」說的是香氣傳得越遠越清幽，象徵君子品格高潔、美名遠播。'
+        },
+        {
+            q: '「濯清漣而不妖」一句中的「濯」字，最接近哪一個意思？',
+            opts: [
+                '洗滌、洗掉。蓮花在清水中洗去一身塵垢，卻不顯得半點嬌媚與做作',
+                '照耀、照射。清澈的水波映照著蓮花，使它顯得格外明亮而耀眼奪目',
+                '提拔、拔高。蓮花被清澈的水波向上托舉，而生長得更加挺拔高聳',
+                '炫耀、自誇。蓮花雖然姿容美好，卻不會刻意炫耀自己而暗自驕矜自滿'
+            ],
+            ans: 0,
+            exp: '「濯」是「洗滌」的意思，「清漣」指清水，「漣」是水面被風吹起的波紋。「濯清漣而不妖」象徵君子有高雅的節操，不取媚於世。'
+        },
+        {
+            q: '下列哪一句話的意思是「只能從遠處欣賞，不能隨便靠近去玩弄」？',
+            opts: [
+                '亭亭淨植，可遠觀而不可褻玩焉。「淨植」指潔淨地直立，「褻玩」指輕慢玩弄',
+                '中通外直，不蔓不枝。「中通外直」指花梗中空，「不蔓不枝」指不長旁枝',
+                '香遠益清，亭亭淨植。「香遠益清」指香氣遠傳而更加清幽，動人心脾',
+                '予謂菊，花之隱逸者也。這是說明菊花是花中的隱士以及作者的由來'
+            ],
+            ans: 0,
+            exp: '「可遠觀而不可褻玩焉」中「褻」是輕慢，「玩」是玩弄，「焉」是句末助詞無義。課本指出這句象徵君子高尚的人格令人敬仰，不敢輕慢戲弄。'
+        },
+        {
+            q: '文末「牡丹之愛，宜乎眾矣」的「宜乎眾矣」，表達的意思最接近下列哪一項？',
+            opts: [
+                '喜愛牡丹的人本來就應該很多，用委婉的語氣表達對世人貪慕富貴的感慨',
+                '喜愛牡丹的人應該多多栽種才是，鼓勵大家一起在庭院之中種滿各色的牡丹',
+                '喜愛牡丹的人固然很多，但這也代表牡丹確實是花中最嬌美艷麗的那一朵',
+                '依照眾人的喜好來挑選牡丹品種，這樣就能選出品質最好、最名貴的品種來栽'
+            ],
+            ans: 0,
+            exp: '「宜」是應當，「乎」是助詞無義，「宜乎眾矣」看似陳述事實，實則含蓄批評世俗風氣，語氣委婉而不露鋒芒，與前文「同予者何人？」形成對比。'
+        },
+        {
+            q: '作者為什麼要說「牡丹，花之富貴者也」？',
+            opts: [
+                '牡丹花朵大而豔麗、香氣馥郁，自古就被視為富貴的象徵而有富貴花之稱',
+                '牡丹是所有花卉中花期最長的一種，一年四季都能開花所以象徵長久的富貴',
+                '牡丹原產於中國西北，是唐朝武則天時代才被培育出來的新穎珍貴品種',
+                '牡丹的根莖與花瓣都可以入藥與食用，是藥食同源而名貴稀有的花卉品種'
+            ],
+            ans: 0,
+            exp: '課本提到，唐宋兩代種植牡丹最為盛行，因花朵大又美麗，加以綠葉陪襯，顯得雍容華貴，所以又叫「富貴之花」「百花之王」或「國色天香」。'
+        },
+        {
+            q: '「噫！菊之愛，陶後鮮有聞」中的「噫」字，表達了什麼樣的語氣？',
+            opts: [
+                '感嘆、惋惜。對陶淵明之後愛菊的人如此稀少一事，表達了深深的慨嘆',
+                '疑問、懷疑。對陶淵明究竟有沒有真正愛上菊花這件事，作者感到懷疑',
+                '贊嘆、讚賞。作者十分敬佩陶淵明不慕榮利而堅持理想的高尚風骨品格',
+                '驚訝、訝異。作者沒想到居然還有人喜歡菊花，而為此感到相當的意外'
+            ],
+            ans: 0,
+            exp: '「噫」是表示感嘆的語氣，相當於白話的「唉」。課本指出「菊之愛」「蓮之愛」「牡丹之愛」這組排比句一述一問一嘆，既照應前文，又委婉含蓄地表達對世人追求富貴的慨嘆。'
+        },
+        {
+            q: '在〈愛蓮說〉的字形字音練習中，「濯濯」一詞的「濯」字，表示的是哪一種意思？',
+            opts: [
+                '光禿禿、沒有草木的樣子，如同童山濯濯那樣寸草不生的荒涼狀況',
+                '洗滌、清洗衣物或身體，如同洗濯一般把汙垢徹底地洗去乾淨',
+                '照耀、照射光芒，如同耀眼奪目一般散發出十分明亮刺眼的光芒',
+                '炫耀、自誇其功，帶有一種自我吹噓而向人誇耀的語氣與心態'
+            ],
+            ans: 0,
+            exp: '「濯濯」形容光禿的樣子，多形容人禿頭無髮；「濯濯」另一個意思是洗滌（如「洗濯」）。這題要區分「濯／擢／躍／耀」四個形近字的用法。'
+        },
+        {
+            q: '作者把菊、牡丹、蓮分別拿來比喻三種不同的人。下列配對何者正確？',
+            opts: [
+                '菊花是隱逸者、牡丹是富貴者、蓮花是君子；三者之中作者最推崇的是蓮花',
+                '菊花是富貴者、牡丹是君子者、蓮花是隱逸者；三者之中作者最反感蓮花',
+                '菊花是君子者、牡丹是隱逸者、蓮花是富貴者；三者之中作者最認同菊花',
+                '菊花是隱逸者、牡丹是君子者、蓮花是富貴者；三者之中作者最尊崇牡丹'
+            ],
+            ans: 0,
+            exp: '「予謂：菊，花之隱逸者也；牡丹，花之富貴者也；蓮，花之君子者也。」這組排比句以三種花代表三種人格典型，並以對比手法將蓮花美好的形象自然呈現。'
+        },
+        {
+            q: '下列關於「君子」一詞的理解，何者最符合〈愛蓮說〉的內容？',
+            opts: [
+                '君子的標準不在於身分地位，而在於能否潔身自愛、不隨流俗並堅持正道',
+                '君子必須具備顯赫的家世背景，才能在社會地位上與一般常人多有不同',
+                '君子必須擁有廣大的財力與權力，才能保護自己在亂世的環境中全身而退',
+                '君子的標準在於是否獲得眾人的一致稱頌，為眾人所稱頌者才是真君子'
+            ],
+            ans: 0,
+            exp: '課本引導提問指出：君子的標準不在於身分，而在於品德與行為。陶淵明不為五斗米折腰、堅守道德不改其志，這樣的人就是君子，與家世財力無關。'
+        },
+        {
+            q: '周敦頤在文中強調「君子不阿諛媚俗」，這與他為官處世的一貫作風相互呼應。下列史實何者最能印證？',
+            opts: [
+                '轉運使王逵欲嚴加處理罪不至死的獄囚，他據理力爭，無奈不從便棄官而去',
+                '端州知州壟斷硯石買賣被譏為杜萬石，他請求朝廷下令官員取硯不得超過二枚',
+                '他在南昌做官時罹患大病，衣服家當全在破舊箱中，箱內的錢竟然不滿百枚',
+                '他在郴縣任縣令時首修學校以教人，代理邵州時更是大開講學之風而一時蔚然'
+            ],
+            ans: 0,
+            exp: '王逵欲嚴辦獄囚時，周敦頤據理力爭不被採納，便憤怒棄官而去說：「如此尚可仕乎？殺人以媚人，吾不為也。」這正是不阿諛媚俗、不為五斗米折腰的寫照。'
+        },
+        {
+            q: '周敦頤為什麼選擇蓮花作為君子的象徵？下列何者最能支持這項判斷？',
+            opts: [
+                '蓮花的生長環境、形貌與香氣都與人的品格相通，能自然地將花的特質轉為人的品德',
+                '蓮花是六月的花神而且別名極多，自古以來便在文人間流傳著許多美麗的詩句',
+                '蓮花與佛教的關係十分密切，佛經中常以蓮花代表理想而圓滿的人格特質',
+                '白河、觀音都是著名的賞蓮景點，蓮花能讓人聯想到悠閒雅緻的田園生活情調'
+            ],
+            ans: 0,
+            exp: '本文是「藉物託志」的詠物作品，作者以花比人：出淤泥而不染象徵不同流合汙、濯清漣而不妖象徵不媚世阿俗、中通外直象徵胸懷坦蕩、香遠益清象徵美名遠播。'
+        }
+    ],
+    expert: [
+        {
+            q: '作者在第一段先寫「晉陶淵明獨愛菊」與「世人盛愛牡丹」，再寫「予獨愛蓮」，這種安排在修辭與結構上具有什麼樣的作用？',
+            opts: [
+                '以菊花作正面陪襯、以牡丹作反面襯托，藉此凸顯自己與隨俗之人的不同流俗',
+                '以陶淵明與世人作為對照組，藉此說明當時愛花之風盛行的社會風氣如何普遍',
+                '以先賢的喜好作為權威依據，藉此證明自己喜愛蓮花的品味遠比世俗之人高明',
+                '以三種花依序出現的排列順序，藉此交代本文寫作的時代背景與作者所處地理位置'
+            ],
+            ans: 0,
+            exp: '課本指出：藉牡丹象徵富貴，追慕者眾多，反襯蓮花高潔但愛蓮者卻甚少，委婉貶責世人貪慕富貴的心態；以菊花作陪襯，凸顯蓮花在汙濁環境中保持高貴情操，較菊花的消極避世更加可貴。'
+        },
+        {
+            q: '課本指出本文可分三層意思，下列哪一項與第二層「說明自己唯獨愛蓮及其原因」的敘述最相符？',
+            opts: [
+                '作者先泛論花之可愛者甚多且人各有所好，再集中描寫蓮的生長環境與外形香氣',
+                '作者藉菊花代表隱逸者、牡丹代表富貴者，進而引出蓮花是花中之君子的結論',
+                '作者藉花慨嘆當時士人爭名逐利，把愛蓮者少、愛牡丹者多的現象歸因於世風',
+                '作者先說明蓮花之所以值得愛賞，是因為它出淤泥而不染且香氣清遠可供遠觀'
+            ],
+            ans: 0,
+            exp: '第二層是作者集中描寫蓮的生長環境（出淤泥而不染、濯清漣而不妖）、形貌（中通外直、不蔓不枝、亭亭淨植）與香氣（香遠益清）等方面；選項三則是第三層的內容。'
+        },
+        {
+            q: '文末「菊之愛，陶後鮮有聞。蓮之愛，同予者何人？牡丹之愛，宜乎眾矣」這組排比句，在表達上最主要的特點是什麼？',
+            opts: [
+                '採用一述一問一嘆的層次，一樣含蓄地表達對世人爭相追逐富貴的批判與感慨',
+                '採用層遞進的句式，把愛菊、愛蓮、愛牡丹的人數由少到多依序排列成段落',
+                '採用設問與反問交錯的方式，直接點明自己才是當世唯一真正愛蓮的那個人',
+                '採用總分總的結構，先概括三種花的象徵義，再分別補充說明各自的代表人物'
+            ],
+            ans: 0,
+            exp: '課本指出這組排比句一述一問一嘆，既照應前文，又委婉含蓄地表達對世人追求富貴的慨嘆。「宜乎眾矣」看似陳述事實，實則含蓄批評世俗風氣，語氣委婉而不露鋒芒。'
+        },
+        {
+            q: '「可遠觀而不可褻玩焉」一句，既描寫了蓮花的姿態，也寄託了作者的品格追求。下列對這句話的解讀，何者最恰當？',
+            opts: [
+                '這句話以觀賞蓮花的規矩來比喻君子令人敬重、不容輕慢戲弄的高尚品格',
+                '這句話在批評賞花的人品味不高，認為他們只配遠觀而不配近前細細把玩',
+                '這句話強調蓮花嬌弱而容易損折，必須保持距離才能讓花期更加長久持久',
+                '這句話藉由限制人與花的距離，暗示君子其實不喜歡與他人過從甚密的交遊'
+            ],
+            ans: 0,
+            exp: '課本指出這句象徵君子高尚的人格令人敬仰，不敢輕慢戲弄。「可遠觀而不可褻玩焉」表面寫觀賞的規矩，實則以花的姿態寫君子令人不敢輕慢的品格。'
+        },
+        {
+            q: '關於文末「蓮之愛，同予者何人？」的設問句，下列理解何者最符合課本「疑難辨析」所強調的判斷原則？',
+            opts: [
+                '此句可解為「疑問（懸問）」，語意是感嘆有道德理想的君子難尋、知音難覓',
+                '此句可解為「激問」，作者心中早知無人能與己同愛蓮，答案就藏在問句的反面',
+                '此句可解為「提問」，作者是為了引出下文對世人爭相愛牡丹的批評作為答案',
+                '此句可解為「疑問（懸問）」，語意是感嘆世上只有自己能理解蓮花的清雅出眾'
+            ],
+            ans: 0,
+            exp: '課本指出此句可視為設問法中的「疑問（懸問）」，是以問句表達感嘆，暗示有道德理想的人實在很少。至於解作「激問」雖也說得通，但課本建議出題時避開判斷設問種類的題型。'
+        },
+        {
+            q: '下列關於本文「襯托」手法的說明，何者正確？',
+            opts: [
+                '以菊花象徵隱逸者作陪襯凸顯蓮花可貴，以牡丹象徵富貴者作反襯抬高蓮之高潔',
+                '以牡丹象徵富貴者作陪襯凸顯蓮花可貴，以菊花象徵隱逸者作反襯抬高蓮之高潔',
+                '以蓮花象徵君子者作為正襯，以陶淵明與世人作為反襯來凸顯周敦頤人格高尚',
+                '以菊、蓮、牡丹三花依序排列作對比襯托，呈現出從隱逸到富貴的價值高低排序'
+            ],
+            ans: 0,
+            exp: '課本註明：正襯是用相似的事物襯托所描繪的事物，反襯是用相反或相異的事物襯托所描繪的事物。菊花與蓮花同樣高潔屬正襯（陪襯），牡丹則與蓮花相反屬反襯。'
+        },
+        {
+            q: '某教師想以本文作為學生練習「以物喻人」的範例。若要將「不蔓不枝」的特質轉化為現代君子的品格，下列何者最為恰當？',
+            opts: [
+                '形容君子胸懷坦蕩，不攀附朋黨、依附權勢，也不為謀求私利而汲汲營營',
+                '形容君子做事專心一致，不會三心二意地分散精力而總是半途而廢的態度',
+                '形容君子言語謹慎得體，不隨便在人前發言而總是思考之後才謹慎地開口',
+                '形容君子為人謙遜低調，不會主動爭取表現機會而總是躲在人群之後不出頭'
+            ],
+            ans: 0,
+            exp: '課本註解指出，「不蔓不枝」指不蔓延細莖、不旁生枝條，象徵君子內心光明正大、胸懷通達坦蕩，不攀附朋黨、不營求富貴。'
+        },
+        {
+            q: '下列關於〈愛蓮說〉寫作架構的分析，何者最能說明本文「開合有致、詳略得當」的特點？',
+            opts: [
+                '泛論眾花只佔少量篇幅，而細寫蓮的特質與抒發感懷則詳盡鋪陳，主次分明',
+                '起首以「水陸草木之花，可愛者甚蕃」總領全文，收結則以具體人物陶淵明作結',
+                '全文先敘述而後議論再抒情，三個部分各自獨立又前後銜接，形成完整的結構',
+                '作者引用陶淵明與李唐的說法作為文章的開頭與結尾，使全文首尾能夠互相呼應'
+            ],
+            ans: 0,
+            exp: '課本指出全文不到一百五十字，內容卻豐富：有愛花史的概述、對蓮花的描寫、對諸花的品評及抒發自身感慨，而無不是為突出「愛蓮」的主旨。'
+        },
+        {
+            q: '若要將〈愛蓮說〉改寫為現代白話文，下列處理方式何者最符合課文原有的語意與語氣？',
+            opts: [
+                '「噫」譯為「唉」、「宜乎眾矣」譯為「應當很多了」，保留原文含蓄的語氣',
+                '「噫」譯為「啊」、「宜乎眾矣」譯為「這樣才恰當」，改為直接的判斷語氣',
+                '「噫」譯為「咦」、「宜乎眾矣」譯為「應該很合理」，強化作者的疑問語氣',
+                '「噫」譯為「嘿」、「宜乎眾矣」譯為「大概人數不多」，弱化作者的批判意味'
+            ],
+            ans: 0,
+            exp: '課本文言快譯為：「唉！喜愛菊花的人，陶淵明以後很少聽說過……喜愛牡丹的人，應當很多了！」語氣委婉而不露鋒芒，改寫時不應強化或弱化。'
+        },
+        {
+            q: '有學者主張，〈愛蓮說〉中的蓮花除了象徵君子，更帶有濃厚的佛教意涵。下列敘述何者最能支持這個觀點？',
+            opts: [
+                '蓮花與佛教關係密切，佛經中以蓮代表理想人格，許多菩薩皆坐於蓮花座上',
+                '蓮花的別名極多，有芙蓉、菡萏、芙蕖等古雅名稱，自古便受文人雅士的喜愛',
+                '蓮花生長在滿是淤泥的池塘裡卻毫不沾染污泥，這種特殊的生長習性最為關鍵',
+                '蓮在六月盛開故六月又稱「荷月」，還有白河、觀音等眾所皆知的賞蓮景點'
+            ],
+            ans: 0,
+            exp: '課本語文充電站指出：在佛教裡蓮更有神聖的意義，佛經裡以此代表理想、完美的人格，許多菩薩都坐在蓮花座上，或腳踩蓮花，佛教徒更視蓮為吉祥如意的象徵。'
+        },
+        {
+            q: '比較〈愛蓮說〉與課本收錄的韓愈〈馬說〉，下列敘述何者正確？',
+            opts: [
+                '兩篇同為「說」體名篇，皆藉具體事物寄寓深遠涵義，都是在短短篇幅中寫盡寄託',
+                '兩篇同為「說」體名篇，〈愛蓮說〉以花喻人、〈馬說〉以馬喻人，兩者喻體完全相同',
+                '兩篇同為「說」體名篇，〈愛蓮說〉旨在表彰君子，〈馬說〉旨在說明養馬的特殊訣竅',
+                '兩篇同為「說」體名篇，〈愛蓮說〉語氣委婉含蓄批評世人，〈馬說〉語氣平和中立地敘述'
+            ],
+            ans: 0,
+            exp: '課本指出：「說」是用來解析事理、闡述己見的文體，愛蓮說與馬說皆為說體名篇，都能在短小的篇幅中寄寓深遠的涵義，一為詠物抒懷，一為借題發揮。'
+        },
+        {
+            q: '某學生讀完〈愛蓮說〉後說：「作者既然覺得追隨富貴的人太多，為何不直接批判他們，反而要透過寫花來繞個彎說話？」下列何者最能解釋作者的寫作考量？',
+            opts: [
+                '作者以「說」體委婉陳述，既能表明自己的志節，又可避免與時勢正面衝突而招致禍害',
+                '作者認為當時的人都喜歡寓言式的文章，直接批判會讓當時的文人感到非常難堪',
+                '作者因為自己也是身處官場的讀書人，不願讓世人誤以為他是在批評朝廷的治國方式',
+                '作者認為文章本來就應含蓄蘊藉，把真正的意思隱藏在文字背後才能顯出作者的學問'
+            ],
+            ans: 0,
+            exp: '課本指出本文「絕少說教氣」，表面寫蓮花實則寫君子，藉蓮花寄託胸懷；「說」體本即為解析事理、闡述己見，語氣委婉含蓄，正是要避免與時勢正面衝突。'
+        },
+        {
+            q: '綜合全文判斷，作者寫作〈愛蓮說〉最主要的目的是什麼？',
+            opts: [
+                '以蓮花自況並寄託心志，委婉表達自己願做君子的期許與對世俗貪慕的感慨',
+                '介紹蓮花與菊花的栽培方法與種植歷史，讓後人可以了解各種花卉的實用價值',
+                '藉陶淵明愛菊與世人愛牡丹的現象，批評當時世人消極避世、不敢積極用世的心態',
+                '以蓮花象徵君子的種種美德，說明只要遵循君子的標準就能在亂世中安身立命'
+            ],
+            ans: 0,
+            exp: '本文是「藉物託志」的詠物作品，作者以花比人，既寫出自己的理想人格，也委婉地貶責了世人的汲汲於富貴。全文一百一十九字，寄託了作者的心志與感慨。'
+        },
+        {
+            q: '課本引用吳功正《古文鑑賞集成》的說法指出，蓮花象徵的君子比菊花象徵的隱士更為可貴。下列哪一項最能解釋這個比較的原因？',
+            opts: [
+                '隱士以逃避現實來保全自己，君子則敢於身處污濁的環境並在其中堅守自己的操守',
+                '隱士的處境比君子更加危險危殆，因而更需要隱居避世以確保自身的安全無虞',
+                '隱士大多有高妙的文采與詩作，君子則往往不善文辭而只會憑著實力付諸行動',
+                '隱士的個性多半孤僻冷漠而不善交遊，君子則善於廣結善緣與天下人打成一片'
+            ],
+            ans: 0,
+            exp: '課本引述指出：菊花象徵的隱逸者是採逃避態度，蓮花象徵的君子則敢於面對現實，在汙濁生活中保持它高潔的情操，因此蓮花比菊花顯得更加可貴。'
+        },
+        {
+            q: '有教師想用本文帶領學生做「以物喻人」的遷移練習。若要將「香遠益清」轉化為現代君子的品格，下列哪一種轉化最為恰當？',
+            opts: [
+                '形容君子品格高潔而美名遠播，即使遠離人群也仍能讓他人感念與敬仰',
+                '形容君子學問渊博而著作等身，聲名遠播海內外而流傳後世歷久不衰',
+                '形容君子善於經營人脈與社交，名聲廣傳而廣受四方之士的喜愛與擁護',
+                '形容君子氣味清雅而與眾不同，在人群之中總是散發出獨特而珍貴的芬芳'
+            ],
+            ans: 0,
+            exp: '課本註解指出，「香遠益清」象徵君子品格高潔、美名遠播。與「亭亭淨植」合觀，則表現出君子令人敬仰、不敢輕慢戲弄的高尚人格。'
+        },
+        {
+            q: '若把〈愛蓮說〉的教學重點定位在「作者為何要先寫菊與牡丹」，下列哪一項最能說明這項安排在教學上 的價值？',
+            opts: [
+                '讓學生體會對比與襯托如何凸顯主題，理解作者以側襯筆法委婉寄托心志的高明',
+                '讓學生熟記菊花、牡丹與蓮花三種花的各種別名與科屬分類等基礎植物常識',
+                '讓學生掌握陶淵明愛菊的完整生平事蹟，並能說出他晚年歸隱田園的始末來由',
+                '讓學生從文章中找出所有出現的花名，藉此熟悉古文當中常見的動植物詞彙與典故'
+            ],
+            ans: 0,
+            exp: '課文賞析指出，本文善用對比，以牡丹反襯蓮花之高潔，以菊花陪襯蓮花，因為同樣是不隨世浮沉，菊花象徵的隱逸者是採逃避態度，而蓮花象徵的君子則敢於面對現實。'
+        }
+    ]
+};
+
+/* ─────────────────────────────────
+   SOUND
+   ───────────────────────────────── */
+let soundOn = true;
+const bgm    = document.getElementById('bgm');
+const sfxWin = document.getElementById('sfxWin');
+
+function toggleSound() {
+    soundOn = !soundOn;
+    document.getElementById('soundBtn').textContent = soundOn ? '🔊' : '🔇';
+    if (soundOn) {
+        bgm.play().catch(()=>{});
+    } else {
+        bgm.pause();
+        sfxWin.pause();
+    }
+}
+
+function playBGM() {
+    if (soundOn) bgm.play().catch(()=>{});
+}
+function stopBGM() { bgm.pause(); bgm.currentTime = 0; }
+function playWin() {
+    if (!soundOn) return;
+    bgm.pause();
+    sfxWin.currentTime = 0;
+    sfxWin.play().catch(()=>{});
+}
+
+document.addEventListener('click', function startBGM() {
+    playBGM();
+    document.removeEventListener('click', startBGM);
+}, { once: true });
+
+/* ─────────────────────────────────
+   GAME STATE
+   ───────────────────────────────── */
+let G = {
+    diff: null, levels: null,
+    cur: 0, correct: 0,
+    questions: [], studentName: '', currentAnsIdx: 0
+};
+
+/* ─────────────────────────────────
+   SELECTION
+   ───────────────────────────────── */
+function pick(type, val, el) {
+    if (type === 'diff') {
+        document.querySelectorAll('#cBeginner,#cExpert').forEach(b => b.classList.remove('picked'));
+        G.diff = val;
+    } else {
+        document.querySelectorAll('#c5,#c10').forEach(b => b.classList.remove('picked'));
+        G.levels = val;
+    }
+    el.classList.add('picked');
+    document.getElementById('btnStart').disabled = !(G.diff && G.levels);
+}
+
+/* ─────────────────────────────────
+   SCREEN TRANSITIONS
+   ───────────────────────────────── */
+function switchTo(id, afterFn) {
+    const ov = document.getElementById('overlay');
+    ov.classList.add('on');
+    setTimeout(() => {
+        document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+        document.getElementById(id).classList.remove('hidden');
+        if (afterFn) afterFn();
+        ov.classList.remove('on');
+    }, 340);
+}
+
+function goHome() {
+    stopBGM();
+    G = { diff: null, levels: null, cur: 0, correct: 0, questions: [], studentName: '', currentAnsIdx: 0 };
+    document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('picked'));
+    document.getElementById('btnStart').disabled = true;
+    switchTo('homeScreen');
+}
+
+/* ─────────────────────────────────
+   GAME START
+   ───────────────────────────────── */
+function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+function startGame() {
+    G.questions = shuffle([...QDB[G.diff]]).slice(0, G.levels);
+    G.cur = 0; G.correct = 0;
+    playBGM();
+    switchTo('gameScreen', () => {
+        buildFragRow();
+        renderLevel();
+    });
+}
+
+function buildFragRow() {
+    const row = document.getElementById('fragRow');
+    row.innerHTML = '';
+    FRAGMENTS[G.levels].forEach((_, i) => {
+        const d = document.createElement('div');
+        d.className = 'frag-slot'; d.id = `fs${i}`;
+        d.textContent = '？';
+        row.appendChild(d);
+    });
+}
+
+/* ─────────────────────────────────
+   RENDER LEVEL
+   ───────────────────────────────── */
+function renderLevel() {
+    const q  = G.questions[G.cur];
+    const sc = SCENARIOS[G.cur % SCENARIOS.length];
+    const LT = ['A','B','C','D'];
+
+    document.getElementById('pgLevel').textContent = `第 ${G.cur + 1} 關`;
+    document.getElementById('pgCount').textContent  = `${G.cur} / ${G.levels}`;
+    document.getElementById('pgFill').style.width   = `${(G.cur / G.levels) * 100}%`;
+    document.getElementById('sceneIcon').textContent = sc.icon;
+    document.getElementById('sceneBody').textContent = sc.text;
+    document.getElementById('qText').textContent = q.q;
+
+    // Options shuffler (正確答案隨機排列，不固定在第一個)
+    const perm = shuffle([0, 1, 2, 3]);
+    const displayOpts = perm.map(idx => q.opts[idx]);
+    G.currentAnsIdx = perm.indexOf(q.ans);
+
+    const grid = document.getElementById('ansGrid');
+    grid.innerHTML = '';
+    displayOpts.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'ans-btn'; btn.id = `ab${i}`;
+        btn.innerHTML = `<span class="ans-badge">${LT[i]}</span><span>${opt}</span>`;
+        btn.onclick = () => handleAnswer(i);
+        grid.appendChild(btn);
+    });
+
+    document.getElementById('fbBox').className = 'fb-box';
+    document.getElementById('fbFrag').className = 'fb-frag';
+    document.getElementById('btnRetry').style.display = 'none';
+    document.getElementById('btnNext').style.display  = 'none';
+}
+
+/* ─────────────────────────────────
+   ANSWER HANDLING
+   ───────────────────────────────── */
+function handleAnswer(idx) {
+    const q = G.questions[G.cur];
+    document.querySelectorAll('.ans-btn').forEach(b => b.disabled = true);
+
+    if (idx === G.currentAnsIdx) {
+        document.getElementById(`ab${idx}`).classList.add('correct');
+        G.correct++;
+        showFeedback(true, q.exp);
+        setTimeout(() => {
+            const slot = document.getElementById(`fs${G.cur}`);
+            if (slot) { slot.textContent = FRAGMENTS[G.levels][G.cur]; slot.classList.add('lit'); }
+        }, 600);
+        document.getElementById('fbFragChar').textContent = FRAGMENTS[G.levels][G.cur];
+        document.getElementById('fbFrag').className = 'fb-frag show';
+        document.getElementById('btnNext').style.display = 'inline-block';
+    } else {
+        document.getElementById(`ab${idx}`).classList.add('wrong');
+        document.getElementById(`ab${G.currentAnsIdx}`).classList.add('correct');
+        const card = document.getElementById('qCard');
+        card.classList.add('shaking');
+        card.addEventListener('animationend', () => card.classList.remove('shaking'), { once: true });
+        showFeedback(false, q.exp);
+        document.getElementById('btnRetry').style.display = 'inline-block';
+        document.getElementById('btnNext').style.display = 'inline-block';
+    }
+}
+
+function showFeedback(ok, explain) {
+    const box = document.getElementById('fbBox');
+    box.className = 'fb-box show ' + (ok ? 'fb-ok' : 'fb-ng');
+    document.getElementById('fbHead').textContent    = ok ? '✅ 答對了！密碼碎片已解鎖' : '❌ 答案有誤，請參考解析';
+    document.getElementById('fbExplain').textContent = explain;
+}
+
+function retryLevel() { renderLevel(); }
+
+function nextLevel() {
+    G.cur++;
+    if (G.cur >= G.levels) {
+        stopBGM();
+        showNameScreen();
+    } else {
+        const ov = document.getElementById('overlay');
+        ov.classList.add('on');
+        setTimeout(() => { renderLevel(); ov.classList.remove('on'); }, 340);
+    }
+}
+
+/* ─────────────────────────────────
+   NAME INPUT
+   ───────────────────────────────── */
+function showNameScreen() {
+    switchTo('nameScreen', () => {
+        document.getElementById('nameInput').value = '';
+        document.getElementById('btnConfirm').disabled = true;
+    });
+}
+
+/* ─────────────────────────────────
+   VICTORY
+   ───────────────────────────────── */
+function showVictory() {
+    G.studentName = document.getElementById('nameInput').value.trim() || '同學';
+    switchTo('victoryScreen', () => {
+        document.getElementById('certName').textContent = G.studentName;
+        document.getElementById('certDiff').textContent  = DIFF_LABEL[G.diff];
+        document.getElementById('certLevels').textContent = LEVEL_LABEL[G.levels];
+
+        const chars = document.getElementById('certChars');
+        chars.innerHTML = '';
+        FRAGMENTS[G.levels].forEach((ch, i) => {
+            const d = document.createElement('div');
+            d.className = 'cert-char'; d.textContent = ch;
+            d.style.animationDelay = `${i * 0.12}s`;
+            chars.appendChild(d);
+        });
+
+        document.getElementById('certPhrase').textContent = PHRASES[G.levels];
+        const pct = Math.round((G.correct / G.levels) * 100);
+        document.getElementById('certScore').textContent = `完成 ${G.correct} / ${G.levels} 關 · 一次答對率 ${pct}%`;
+
+        const now = new Date();
+        const dateStr = `${now.getFullYear()} 年 ${now.getMonth()+1} 月 ${now.getDate()} 日`;
+        document.getElementById('certDate').textContent = `完成日期：${dateStr}`;
+
+        playWin();
+        launchConfetti();
+    });
+}
+
+function replayGame() {
+    G.cur = 0; G.correct = 0;
+    G.questions = shuffle([...QDB[G.diff]]).slice(0, G.levels);
+    playBGM();
+    switchTo('gameScreen', () => { buildFragRow(); renderLevel(); });
+}
+
+/* Confetti effect */
+function launchConfetti() {
+    const palette = ['#0f4c5c','#ffd9a0','#3d9a94','#e8a87c','#c9a227','#7fc8b9','#fff'];
+    for (let i = 0; i < 110; i++) {
+        setTimeout(() => {
+            const p = document.createElement('div');
+            p.className = 'confetti-p';
+            const sz = Math.random() * 11 + 5;
+            const isRound = Math.random() > 0.5;
+            p.style.cssText = [
+                `left:${(Math.random()*100).toFixed(1)}vw`,
+                `top:-16px`,
+                `width:${sz}px`,
+                `height:${sz * (isRound ? 1 : 0.45)}px`,
+                `background:${palette[Math.floor(Math.random()*palette.length)]}`,
+                `border-radius:${isRound ? '50%' : '2px'}`,
+                `--dur:${(Math.random()*2+2.5).toFixed(1)}s`,
+                `--dl:0s`
+            ].join(';');
+            document.body.appendChild(p);
+            setTimeout(() => p.remove(), 5500);
+        }, i * 38);
+    }
+}
+
+document.getElementById('nameInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !document.getElementById('btnConfirm').disabled) showVictory();
+});
+</script>
+
+</body>
+</html>
